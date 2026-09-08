@@ -1,4 +1,4 @@
-const CACHE='neon-ping-v4';
+const CACHE='neon-ping-v5';
 const ASSETS=["./", "./index.html", "./manifest.webmanifest", "./icon-192.png", "./icon-512.png", "./coin.png", "./shop-white.png", "./theme-space.png", "./theme-jungle.png", "./theme-lava.png", "./theme-ice.png", "./theme-cyber.png", "./ball-classic.png", "./ball-fire.png", "./ball-ice.png", "./ball-eight.png", "./ball-plasma.png", "./skull-easy.png", "./skull-normal.png", "./skull-hard.png", "./skull-impossible.png", "./boss-skull.png"];
 
 self.addEventListener('install',e=>{e.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS)));self.skipWaiting()});

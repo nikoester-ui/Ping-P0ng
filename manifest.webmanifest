@@ -1,7 +1,7 @@
 {
   "name": "NEON PING // OVERDRIVE",
   "short_name": "Neon Ping",
-  "description": "Arcade ping pong with AI difficulty modes, boss mode, coins, shop themes and ball skins.",
+  "description": "Arcade ping pong with AI difficulty modes, 20-HP boss mode, coins, shop themes and ball skins.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",

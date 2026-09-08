@@ -69,7 +69,7 @@ button:active,.card:active{transform:scale(.98)}
    <div class="hudSide right"><div class="hudPill coinPill"><img src="coin.png"><span class="coinNum" id="coinHud">0</span></div></div>
  </div>
  <button id="pauseBtn"><span class="pauseBars"><i></i><i></i></span></button>
- <div id="bossHud"><div class="bossText"><span>BOSS HEALTH</span><span id="bossHits">0 / 15 HITS</span></div><div class="healthOuter"><div class="healthInner" id="bossHealth"></div></div></div>
+ <div id="bossHud"><div class="bossText"><span>BOSS HEALTH</span><span id="bossHits">0 / 20 HITS</span></div><div class="healthOuter"><div class="healthInner" id="bossHealth"></div></div></div>
  <div id="message">GO!</div>
 </div>
 <div id="center"><div id="panel" class="panel"></div></div>
@@ -125,7 +125,7 @@ if(!['classic','boss'].includes(save.gameMode))save.gameMode='classic';
 function persist(){localStorage.setItem('neonPingSave',JSON.stringify(save));coinHud.textContent=save.coins}
 persist();
 
-const state={playing:false,paused:false,pointLocked:false,pScore:0,aScore:0,time:0,shake:0,rally:0,bossHP:15,bossMax:15,bossX:0,bossY:0,bossDir:1,bossExploding:false};
+const state={playing:false,paused:false,pointLocked:false,pScore:0,aScore:0,time:0,shake:0,rally:0,bossHP:20,bossMax:20,bossX:0,bossY:0,bossDir:1,bossExploding:false,bossElapsed:0};
 const player={x:36,y:H/2,w:18,h:120,vy:0,targetY:H/2},cpu={x:W-36,y:H/2,w:18,h:120,vy:0},ball={x:W/2,y:H/2,r:13,vx:0,vy:0,speed:590};
 const keys=new Set();
 function resize(){const r=wrap.getBoundingClientRect();DPR=Math.min(2,window.devicePixelRatio||1);canvas.width=Math.round(r.width*DPR);canvas.height=Math.round(r.height*DPR);W=r.width;H=r.height;ctx.setTransform(DPR,0,0,DPR,0,0);state.bossX=state.bossX||W*.78}addEventListener('resize',resize);resize();
@@ -147,7 +147,7 @@ function mainMenu(){
  <div class="coinBig"><img src="coin.png">${save.coins}</div>
  <div class="modePick">
    <div class="card ${save.gameMode==='classic'?'selected':''}" data-gamemode="classic" style="--accent:#63ffe8"><b>CLASSIC</b><div class="sub" style="margin:6px 0 0">First to 5 points against the AI.</div></div>
-   <div class="card bossCard ${save.gameMode==='boss'?'selected':''}" data-gamemode="boss"><img class="diffIcon" src="boss-skull.png"><b>BOSS MODE</b><div class="sub" style="margin:6px 0 0">15 hits. Survive the advancing skull. Reward: 50 coins.</div></div>
+   <div class="card bossCard ${save.gameMode==='boss'?'selected':''}" data-gamemode="boss"><img class="diffIcon" src="boss-skull.png"><b>BOSS MODE</b><div class="sub" style="margin:6px 0 0">20 hits. The skull always catches the return and keeps closing in. Reward: 50 coins.</div></div>
  </div>
  ${save.gameMode==='classic'?`<div class="cardGrid">${Object.entries(DIFF).map(([k,v])=>`<div class="card ${k} ${save.difficulty===k?'selected':''}" data-diff="${k}"><div class="cardTitle"><img class="diffIcon" src="${v.icon}"><span>${v.name}</span></div><div class="sub" style="margin:8px 0 0">${v.desc}</div><div class="reward"><img src="coin.png">${v.reward} COINS PER MATCH WIN</div></div>`).join('')}</div>`:''}
  <div class="row"><button id="play">PLAY</button><button class="secondary" id="shop"><span style="display:flex;gap:8px;align-items:center"><img src="shop-white.png" style="width:18px">SHOP</span></button></div>`;
@@ -173,7 +173,7 @@ function shop(tab='themes',fromPause=false){
 function startGame(){
  audio();state.playing=true;state.paused=false;state.pointLocked=false;state.pScore=0;state.aScore=0;state.rally=0;center.style.display='none';showPause(true);
  player.y=H/2;player.targetY=H/2;cpu.y=H/2;
- if(save.gameMode==='boss'){state.bossHP=state.bossMax=15;state.bossX=W*.79;state.bossY=H/2;state.bossDir=1;state.bossExploding=false;bossHud.classList.add('show');updateBossHud()}else bossHud.classList.remove('show');
+ if(save.gameMode==='boss'){state.bossHP=state.bossMax=20;state.bossX=W*.82;state.bossY=H/2;state.bossDir=1;state.bossExploding=false;state.bossElapsed=0;bossHud.classList.add('show');updateBossHud()}else bossHud.classList.remove('show');
  refreshHud();ball.vx=ball.vy=0;ball.x=W/2;ball.y=H/2;showMessage('READY');
  setTimeout(()=>{if(state.playing&&!state.paused){showMessage('GO!','#63ffe8');resetBall(1)}},600);
 }
@@ -211,9 +211,19 @@ function updateBossHud(){let done=state.bossMax-state.bossHP;bossHits.textConten
 function bossHit(){
  state.bossHP--;updateBossHud();state.shake=15;burst(state.bossX,state.bossY,'#ff5b37',38,430);showMessage(`${state.bossMax-state.bossHP}/${state.bossMax}`,'#ff7654');sHit();
  if(state.bossHP<=0){bossWin();return}
- ball.speed=Math.min(1350,640+(state.bossMax-state.bossHP)*42);
- let rel=clamp((ball.y-state.bossY)/(Math.min(H*.34,210)/2),-1,1),ang=rel*.65+((Math.random()-.5)*.18);
- ball.vx=-Math.abs(Math.cos(ang)*ball.speed);ball.vy=Math.sin(ang)*ball.speed;ball.x=state.bossX-Math.min(H*.34,210)*.52-ball.r-3
+ // The boss always catches the incoming ball. Returns become faster and nastier over time.
+ let hits=state.bossMax-state.bossHP;
+ ball.speed=Math.min(1550,650+hits*27+state.bossElapsed*5.5);
+ let danger=clamp(state.bossElapsed/55 + hits/state.bossMax*.55,0,1);
+ let targetOffset=(Math.random()<.5?-1:1)*(player.h*.28 + player.h*.34*danger);
+ let targetY=clamp(player.y+targetOffset,30,H-30);
+ let dx=Math.max(120,state.bossX-player.x),dy=targetY-state.bossY;
+ let ang=clamp(Math.atan2(dy,dx),-.78,.78);
+ ball.vx=-Math.abs(Math.cos(ang)*ball.speed);
+ ball.vy=Math.sin(ang)*ball.speed;
+ let bw=Math.min(H*.34,210),bossPlane=state.bossX-bw*.48;
+ ball.x=bossPlane-ball.r-3;
+ ball.y=clamp(ball.y,ball.r+15,H-ball.r-15);
 }
 function bossWin(){
  state.bossExploding=true;ball.vx=ball.vy=0;state.playing=false;showPause(false);
@@ -237,23 +247,35 @@ function update(dt){
   if(ball.vx>0){let t=(cpu.x-ball.x)/ball.vx,pred=ball.y+ball.vy*t*d.predict+(1-d.predict)*ball.y,min=ball.r+18,max=H-ball.r-18,span=max-min,q=(pred-min)%(span*2);if(q<0)q+=span*2;target=min+(q>span?span*2-q:q)}else target=H/2+Math.sin(state.time*1.4)*H*.1;
   target+=Math.sin(state.time*2.1)*d.error+Math.sin(state.time*.7)*d.error*.4;let oy=cpu.y,diff=target-cpu.y;cpu.y+=clamp(diff,-d.cpu*dt,d.cpu*dt);cpu.y=clamp(cpu.y,cpu.h/2+16,H-cpu.h/2-16);cpu.vy=(cpu.y-oy)/Math.max(.001,dt);
  } else {
-  let progress=(state.bossMax-state.bossHP)/state.bossMax,advance=state.time*2.7 + progress*W*.16;
-  state.bossX=Math.max(player.x+150,W*.79-advance);
-  state.bossY+=state.bossDir*(105+progress*170)*dt;
+  state.bossElapsed+=dt;
+  let progress=(state.bossMax-state.bossHP)/state.bossMax;
+  // Time is the main pressure: the skull continuously advances and accelerates slightly.
+  let advance=state.bossElapsed*6.0 + Math.pow(state.bossElapsed,1.35)*1.1 + progress*W*.07;
+  let dangerLine=player.x+Math.max(128,W*.12);
+  state.bossX=Math.max(dangerLine,W*.82-advance);
   let bh=Math.min(H*.34,210);
-  if(state.bossY<bh/2+70){state.bossY=bh/2+70;state.bossDir=1}if(state.bossY>H-bh/2-35){state.bossY=H-bh/2-35;state.bossDir=-1}
-  if(state.bossX<=player.x+150){bossLose('The skull reached your side of the arena.');return}
+  // When the ball travels toward the boss, the skull tracks it fast enough that it can never miss.
+  if(ball.vx>0){
+    state.bossY=clamp(ball.y,bh/2+34,H-bh/2-28);
+  }else{
+    state.bossY+=state.bossDir*(115+progress*185+state.bossElapsed*1.8)*dt;
+    if(state.bossY<bh/2+55){state.bossY=bh/2+55;state.bossDir=1}
+    if(state.bossY>H-bh/2-30){state.bossY=H-bh/2-30;state.bossDir=-1}
+  }
+  if(state.bossX<=dangerLine+1){bossLose('The skull got too close and swallowed the arena.');return}
  }
 
- trail.push({x:ball.x,y:ball.y,life:.18});if(trail.length>30)trail.shift();ball.x+=ball.vx*dt;ball.y+=ball.vy*dt;
+ trail.push({x:ball.x,y:ball.y,life:.18});if(trail.length>30)trail.shift();let prevBallX=ball.x;ball.x+=ball.vx*dt;ball.y+=ball.vy*dt;
  if(ball.y-ball.r<13&&ball.vy<0){ball.y=13+ball.r;ball.vy*=-1;ring(ball.x,ball.y,'#fff')}if(ball.y+ball.r>H-13&&ball.vy>0){ball.y=H-13-ball.r;ball.vy*=-1;ring(ball.x,ball.y,'#fff')}
  paddleCollision(player,true);
 
  if(save.gameMode==='classic'){
   paddleCollision(cpu,false);if(!state.pointLocked&&ball.x<-40)classicPoint(false);else if(!state.pointLocked&&ball.x>W+40)classicPoint(true)
  }else{
-  let bw=Math.min(H*.34,210),bh=bw*.92,left=state.bossX-bw*.5,right=state.bossX+bw*.5,top=state.bossY-bh*.5,bottom=state.bossY+bh*.5;
-  if(ball.vx>0&&ball.x+ball.r>left&&ball.x-ball.r<right&&ball.y+ball.r>top&&ball.y-ball.r<bottom)bossHit();
+  let bw=Math.min(H*.34,210),bossPlane=state.bossX-bw*.48;
+  // Swept collision: even if a fast frame jumps across the skull, the crossing is still caught.
+  // A safety fallback catches any incoming ball already beyond the boss plane, so tunnelling is impossible.
+  if(ball.vx>0 && ((prevBallX+ball.r<=bossPlane && ball.x+ball.r>=bossPlane) || ball.x+ball.r>bossPlane)) bossHit();
   if(ball.x<-40)bossLose('The ball got past your paddle.');
  }
  particles.forEach(p=>{p.x+=p.vx*dt;p.y+=p.vy*dt;p.vx*=Math.pow(.07,dt);p.vy*=Math.pow(.07,dt);p.life-=dt});particles=particles.filter(p=>p.life>0);rings.forEach(r=>{r.r+=650*dt;r.life-=dt});rings=rings.filter(r=>r.life>0);trail.forEach(t=>t.life-=dt);trail=trail.filter(t=>t.life>0)
