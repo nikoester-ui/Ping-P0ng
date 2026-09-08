@@ -17,78 +17,211 @@ body{display:grid;place-items:center;overscroll-behavior:none;-webkit-user-selec
 #wrap{position:relative;width:min(96vw,1200px);aspect-ratio:16/9;max-height:94vh;border:2px solid rgba(255,255,255,.18);border-radius:24px;overflow:hidden;background:#070912;box-shadow:0 0 60px rgba(0,255,213,.13)}
 canvas{width:100%;height:100%;display:block}
 #hud{position:absolute;inset:0;pointer-events:none}
-.topbar{position:absolute;top:16px;left:20px;right:20px;display:flex;justify-content:space-between;align-items:center;font-size:12px;letter-spacing:.15em;text-transform:uppercase;color:rgba(255,255,255,.7)}
-.badge{border:1px solid rgba(255,255,255,.17);padding:8px 11px;border-radius:999px;background:rgba(5,7,12,.58);backdrop-filter:blur(9px)}
+.topbar{position:absolute;top:14px;left:18px;right:18px;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:10px;font-size:12px;letter-spacing:.15em;text-transform:uppercase;color:rgba(255,255,255,.75)}
+.side{display:flex;gap:10px;align-items:center}
+.side.right{justify-content:flex-end}
+.badge{border:1px solid rgba(255,255,255,.17);padding:8px 11px;border-radius:999px;background:rgba(5,7,12,.62);backdrop-filter:blur(9px)}
+.centerStack{display:flex;gap:10px;justify-content:center;align-items:center}
+.coinBadge{
+  display:flex;align-items:center;gap:8px;padding:7px 12px;
+  border:1px solid rgba(255,255,255,.18);border-radius:999px;
+  background:rgba(5,7,12,.7);backdrop-filter:blur(10px);
+  box-shadow:0 0 20px rgba(255,214,0,.08);
+}
+.coinBadge img{width:21px;height:21px;display:block}
+.outlinedNum{
+  font-weight:950;font-size:16px;line-height:1;color:#ffdf57;
+  -webkit-text-stroke:1px #231100;
+  text-shadow:
+    1px 1px 0 #231100,-1px 1px 0 #231100,1px -1px 0 #231100,-1px -1px 0 #231100,
+    0 0 10px rgba(255,216,70,.18);
+}
+.modeMini{font-weight:900;padding:7px 12px;border-radius:999px;border:1px solid rgba(255,255,255,.16)}
+.mode-easy{background:rgba(40,180,75,.17);color:#75ff97;border-color:rgba(117,255,151,.45)}
+.mode-normal{background:rgba(58,115,255,.17);color:#8bb4ff;border-color:rgba(139,180,255,.45)}
+.mode-hard{background:rgba(225,57,57,.18);color:#ff8c8c;border-color:rgba(255,140,140,.45)}
+.mode-impossible{background:rgba(166,70,255,.18);color:#d6a2ff;border-color:rgba(214,162,255,.45)}
+#pauseBtn{
+  pointer-events:auto;position:absolute;top:16px;right:18px;z-index:12;
+  width:46px;height:46px;border-radius:14px;border:1px solid rgba(255,255,255,.18);
+  background:rgba(5,7,12,.72);color:white;font-size:18px;font-weight:900;
+  display:none;align-items:center;justify-content:center;backdrop-filter:blur(8px);box-shadow:none
+}
+#pauseBtn.show{display:flex}
 #message{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-weight:950;font-size:clamp(40px,9vw,108px);letter-spacing:-.06em;opacity:0;text-shadow:0 0 26px currentColor}
 #center{position:absolute;inset:0;display:grid;place-items:center;text-align:center}
-.panel{pointer-events:auto;width:min(700px,90%);max-height:90%;overflow:auto;padding:28px;border:1px solid rgba(255,255,255,.15);background:linear-gradient(180deg,rgba(10,13,24,.93),rgba(4,5,10,.88));border-radius:26px;box-shadow:0 30px 90px rgba(0,0,0,.45);backdrop-filter:blur(18px)}
-h1{margin:0;font-size:clamp(38px,7vw,76px);line-height:.9;letter-spacing:-.06em;font-weight:950;text-shadow:0 0 22px rgba(0,255,213,.4)}
-h1 span{color:#63ffe8}.sub{margin:15px auto 20px;max-width:570px;color:rgba(255,255,255,.65);line-height:1.45;font-size:14px}
+.panel{
+  pointer-events:auto;width:min(760px,92%);max-height:92%;overflow:auto;padding:26px 22px;
+  border:1px solid rgba(255,255,255,.15);background:linear-gradient(180deg,rgba(10,13,24,.95),rgba(4,5,10,.9));
+  border-radius:26px;box-shadow:0 30px 90px rgba(0,0,0,.45);backdrop-filter:blur(18px)
+}
+.shopHeader{display:flex;justify-content:center;align-items:center;gap:12px}
+.shopHeader img{width:38px;height:38px;filter:drop-shadow(0 0 14px rgba(255,255,255,.18))}
+h1{margin:0;font-size:clamp(38px,7vw,76px);line-height:.92;letter-spacing:-.06em;font-weight:950;text-shadow:0 0 22px rgba(0,255,213,.35)}
+h1 span{color:#63ffe8}
+.sub{margin:14px auto 18px;max-width:600px;color:rgba(255,255,255,.68);line-height:1.45;font-size:14px}
 button{appearance:none;border:0;padding:13px 18px;border-radius:15px;font-weight:900;font-size:14px;cursor:pointer;background:#63ffe8;color:#02120e;box-shadow:0 0 24px rgba(99,255,232,.28)}
 button.secondary{background:rgba(255,255,255,.08);color:white;border:1px solid rgba(255,255,255,.14);box-shadow:none}
-button.locked{opacity:.65}
 .row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
-.mode-grid,.shop-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin:16px 0}
-.card{padding:14px;border:1px solid rgba(255,255,255,.12);border-radius:16px;background:rgba(255,255,255,.035);text-align:left}
-.card.active{border-color:#63ffe8;box-shadow:inset 0 0 22px rgba(99,255,232,.08)}
-.card b{display:block;font-size:16px;margin-bottom:4px}.small{font-size:12px;color:rgba(255,255,255,.6);line-height:1.4}
-.tabs{display:flex;gap:8px;justify-content:center;margin:12px 0}.tabs button{padding:10px 13px}
-#coinBox{font-weight:900;color:#ffde59}
+.mode-grid,.shop-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin:16px 0}
+.card{
+  padding:14px;border:1px solid rgba(255,255,255,.12);border-radius:18px;background:rgba(255,255,255,.035);
+  text-align:left;position:relative;overflow:hidden
+}
+.card.active{box-shadow:inset 0 0 25px rgba(255,255,255,.04)}
+.card b{display:block;font-size:16px;margin-bottom:4px}
+.small{font-size:12px;color:rgba(255,255,255,.6);line-height:1.4}
+.modeCard.easy{border-color:rgba(117,255,151,.35);box-shadow:inset 0 0 24px rgba(117,255,151,.06)}
+.modeCard.normal{border-color:rgba(139,180,255,.35);box-shadow:inset 0 0 24px rgba(139,180,255,.06)}
+.modeCard.hard{border-color:rgba(255,140,140,.35);box-shadow:inset 0 0 24px rgba(255,140,140,.06)}
+.modeCard.impossible{border-color:rgba(214,162,255,.35);box-shadow:inset 0 0 24px rgba(214,162,255,.06)}
+.modeCard.easy.active{outline:2px solid rgba(117,255,151,.55)}
+.modeCard.normal.active{outline:2px solid rgba(139,180,255,.55)}
+.modeCard.hard.active{outline:2px solid rgba(255,140,140,.55)}
+.modeCard.impossible.active{outline:2px solid rgba(214,162,255,.55)}
+.tabs{display:flex;gap:8px;justify-content:center;margin:12px 0;flex-wrap:wrap}
+.tabs button{padding:10px 13px}
+.coinPanel{
+  display:flex;justify-content:center;align-items:center;gap:8px;margin-top:2px;
+  font-size:22px;font-weight:950;color:#ffdf57;
+  -webkit-text-stroke:1px #231100;
+  text-shadow:
+    1px 1px 0 #231100,-1px 1px 0 #231100,1px -1px 0 #231100,-1px -1px 0 #231100,
+    0 0 16px rgba(255,216,70,.14)
+}
+.coinPanel img{width:26px;height:26px}
+.preview-theme{
+  margin-top:10px;height:86px;border-radius:14px;position:relative;overflow:hidden;
+  border:2px solid rgba(255,255,255,.08)
+}
+.preview-theme .grid{
+  position:absolute;inset:0;opacity:.24;
+  background-size:26px 26px,26px 26px;
+  background-image:
+   linear-gradient(to right,var(--grid) 1px,transparent 1px),
+   linear-gradient(to bottom,var(--grid) 1px,transparent 1px)
+}
+.preview-theme .arena{
+  position:absolute;inset:10px;border-radius:12px;border:3px solid var(--arena);
+  box-shadow:0 0 10px rgba(255,255,255,.12)
+}
+.preview-theme .centerline{
+  position:absolute;top:12px;bottom:12px;left:50%;width:0;border-left:2px dashed rgba(255,255,255,.28)
+}
+.preview-theme .paddle,.preview-theme .ball{
+  position:absolute;background:#fff;border-radius:999px
+}
+.preview-theme .paddle{
+  width:10px;height:34px;top:50%;transform:translateY(-50%);border:2px solid var(--arena)
+}
+.preview-theme .paddle.left{left:18px}
+.preview-theme .paddle.right{right:18px}
+.preview-theme .ball{
+  width:14px;height:14px;left:50%;top:50%;transform:translate(-50%,-50%);
+  background:radial-gradient(circle at 35% 35%,#fff,var(--ball));
+  border:3px solid #05070b;outline:2px solid #fff
+}
+.preview-ballWrap{
+  margin-top:10px;height:86px;border-radius:14px;position:relative;overflow:hidden;
+  border:2px solid rgba(255,255,255,.08);
+  background:linear-gradient(135deg,#0b1020,#05060a)
+}
+.preview-ballWrap .arena{
+  position:absolute;inset:10px;border-radius:12px;border:3px solid rgba(255,255,255,.18)
+}
+.preview-ballWrap .ball{
+  width:30px;height:30px;border-radius:50%;position:absolute;left:50%;top:50%;
+  transform:translate(-50%,-50%);
+  background:radial-gradient(circle at 35% 35%,#fff,var(--ball));
+  border:5px solid #05070b;outline:2px solid #fff;
+  box-shadow:0 0 22px rgba(255,255,255,.10)
+}
+.shopBtnContent{display:inline-flex;align-items:center;gap:8px}
+.shopBtnContent img{width:18px;height:18px}
 #rotateNote{display:none;position:absolute;inset:0;z-index:50;background:#05060a;place-items:center;text-align:center;padding:30px}
-@media(max-width:700px){#wrap{width:100vw;height:100vh;max-height:none;aspect-ratio:auto;border-radius:0;border:0}.panel{padding:22px 15px}.mode-grid,.shop-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:700px){
+  #wrap{width:100vw;height:100vh;max-height:none;aspect-ratio:auto;border-radius:0;border:0}
+  .panel{padding:20px 14px}
+  .mode-grid,.shop-grid{grid-template-columns:1fr 1fr}
+  .topbar{left:10px;right:10px;grid-template-columns:1fr auto 1fr}
+  .badge{padding:7px 9px}
+  #pauseBtn{top:10px;right:10px}
+}
 @media(orientation:portrait) and (max-width:900px){#rotateNote{display:grid}}
 </style>
 </head>
 <body>
 <div id="wrap">
 <canvas id="game"></canvas>
+
 <div id="hud">
   <div class="topbar">
-    <div class="badge">YOU <b id="pScore">0</b></div>
-    <div class="badge"><span id="modeBadge">NORMAL</span> · <span id="coinHud">0</span> 🪙</div>
-    <div class="badge">CPU <b id="aScore">0</b></div>
+    <div class="side">
+      <div class="badge">YOU <b id="pScore">0</b></div>
+    </div>
+    <div class="centerStack">
+      <div id="modeBadge" class="modeMini mode-normal">NORMAL</div>
+      <div class="coinBadge">
+        <img src="coin.png" alt="coin">
+        <span id="coinHud" class="outlinedNum">0</span>
+      </div>
+    </div>
+    <div class="side right">
+      <div class="badge">CPU <b id="aScore">0</b></div>
+    </div>
   </div>
+  <button id="pauseBtn" title="Pause">⏸</button>
   <div id="message">GO!</div>
 </div>
+
 <div id="center"><div id="panel" class="panel"></div></div>
 <div id="rotateNote"><div><div style="font-size:50px">↻</div><h2>Rotate your phone</h2><div class="small">NEON PING plays best in landscape.</div></div></div>
 </div>
+
 <script>
 (() => {
 const canvas=document.getElementById('game'),ctx=canvas.getContext('2d'),wrap=document.getElementById('wrap');
 const panel=document.getElementById('panel'),center=document.getElementById('center');
-const pScoreEl=document.getElementById('pScore'),aScoreEl=document.getElementById('aScore'),coinHud=document.getElementById('coinHud'),modeBadge=document.getElementById('modeBadge'),message=document.getElementById('message');
+const pScoreEl=document.getElementById('pScore'),aScoreEl=document.getElementById('aScore'),coinHud=document.getElementById('coinHud'),modeBadge=document.getElementById('modeBadge'),message=document.getElementById('message'),pauseBtn=document.getElementById('pauseBtn');
 let W=1280,H=720,DPR=1,last=performance.now(),particles=[],rings=[],trail=[];
 
 const DIFF={
- easy:{name:'EASY',reward:15,cpu:360,error:86,predict:.55,speedRamp:34},
- normal:{name:'NORMAL',reward:30,cpu:470,error:55,predict:.72,speedRamp:43},
- hard:{name:'HARD',reward:50,cpu:590,error:27,predict:.9,speedRamp:51},
- impossible:{name:'IMPOSSIBLE',reward:80,cpu:800,error:8,predict:1,speedRamp:58}
+ easy:{name:'EASY',reward:15,cpu:360,error:86,predict:.55,speedRamp:34,css:'mode-easy',card:'easy'},
+ normal:{name:'NORMAL',reward:30,cpu:470,error:55,predict:.72,speedRamp:43,css:'mode-normal',card:'normal'},
+ hard:{name:'HARD',reward:50,cpu:590,error:27,predict:.9,speedRamp:51,css:'mode-hard',card:'hard'},
+ impossible:{name:'IMPOSSIBLE',reward:80,cpu:800,error:8,predict:1,speedRamp:58,css:'mode-impossible',card:'impossible'}
 };
 const THEMES={
- neon:{name:'Neon Grid',price:0,bg1:'#070a12',bg2:'#05050b',grid:'#63ffe8'},
- sunset:{name:'Sunset Drive',price:80,bg1:'#24102d',bg2:'#0d0716',grid:'#ff8a5b'},
- ocean:{name:'Deep Ocean',price:120,bg1:'#041c2c',bg2:'#02080d',grid:'#4bd6ff'},
- matrix:{name:'Matrix',price:180,bg1:'#031007',bg2:'#010503',grid:'#56ff74'},
- void:{name:'Void',price:260,bg1:'#12071b',bg2:'#020105',grid:'#b45cff'}
+ neon:{name:'Neon Grid',price:0,bg1:'#070a12',bg2:'#05050b',grid:'#63ffe8',arena:'#63ffe8'},
+ sunset:{name:'Sunset Drive',price:80,bg1:'#24102d',bg2:'#0d0716',grid:'#ff8a5b',arena:'#ff8a5b'},
+ ocean:{name:'Deep Ocean',price:120,bg1:'#041c2c',bg2:'#02080d',grid:'#4bd6ff',arena:'#4bd6ff'},
+ matrix:{name:'Matrix',price:180,bg1:'#031007',bg2:'#010503',grid:'#56ff74',arena:'#56ff74'},
+ void:{name:'Void',price:260,bg1:'#12071b',bg2:'#020105',grid:'#b45cff',arena:'#b45cff'}
 };
-const GEAR={
- classic:{name:'Classic',price:0,ball:'#dfff3f',p1:'#63ffe8',p2:'#ff4fc6'},
- ice:{name:'Ice Core',price:90,ball:'#d8f7ff',p1:'#8deeff',p2:'#c8f7ff'},
- fire:{name:'Inferno',price:140,ball:'#ffd65a',p1:'#ff7b38',p2:'#ff3b5c'},
- toxic:{name:'Toxic',price:200,ball:'#b7ff3c',p1:'#77ff32',p2:'#d2ff44'},
- royal:{name:'Royal Plasma',price:300,ball:'#f4d8ff',p1:'#b16cff',p2:'#ff77dc'}
+const BALLS={
+ classic:{name:'Classic Ball',price:0,color:'#dfff3f'},
+ ice:{name:'Ice Core',price:90,color:'#d8f7ff'},
+ fire:{name:'Inferno Ball',price:140,color:'#ffd65a'},
+ toxic:{name:'Toxic Ball',price:200,color:'#b7ff3c'},
+ royal:{name:'Royal Plasma',price:300,color:'#f4d8ff'}
 };
 
 let save=JSON.parse(localStorage.getItem('neonPingSave')||'null')||{
- coins:0, difficulty:'normal', theme:'neon', gear:'classic',
- ownedThemes:['neon'], ownedGear:['classic']
+ coins:0,difficulty:'normal',theme:'neon',ball:'classic',
+ ownedThemes:['neon'],ownedBalls:['classic']
 };
-function persist(){localStorage.setItem('neonPingSave',JSON.stringify(save));coinHud.textContent=save.coins;modeBadge.textContent=DIFF[save.difficulty].name}
+let returnToPauseAfterShop=false;
+
+function persist(){
+  localStorage.setItem('neonPingSave',JSON.stringify(save));
+  coinHud.textContent=save.coins;
+  const d=DIFF[save.difficulty];
+  modeBadge.textContent=d.name;
+  modeBadge.className='modeMini '+d.css;
+}
 persist();
 
-const state={playing:false,pScore:0,aScore:0,shake:0,flash:0,time:0,rally:0};
+const state={playing:false,paused:false,pScore:0,aScore:0,shake:0,time:0,rally:0};
 const player={x:34,y:H/2,w:18,h:120,vy:0,targetY:H/2};
 const cpu={x:W-34,y:H/2,w:18,h:120,vy:0,targetY:H/2};
 const ball={x:W/2,y:H/2,r:12,vx:0,vy:0,speed:620};
@@ -103,111 +236,233 @@ function tone(f=440,d=.05,type='sine',vol=.05,slide=0){audio();const o=ac.create
 function hitSfx(){tone(190,.045,'square',.045,180);tone(680,.03,'triangle',.025,220)}
 function scoreSfx(win){tone(win?520:190,.12,win?'triangle':'sawtooth',.055,win?350:-80)}
 
+function setPauseButton(show){
+  if(show) pauseBtn.classList.add('show');
+  else pauseBtn.classList.remove('show');
+}
+pauseBtn.onclick=()=>{ if(state.playing && !state.paused) pauseGame(); };
+
 function menu(){
- center.style.display='grid';
+ center.style.display='grid'; setPauseButton(false);
  panel.innerHTML=`<h1>NEON <span>PING</span></h1>
- <div class="sub">Choose a mode. First to 7 wins the match and earns coins. Spend them on themes and gear.</div>
- <div id="coinBox">${save.coins} 🪙</div>
+ <div class="sub">Choose a mode. First to 7 wins the match and earns coins. Spend them on themes and new ball styles.</div>
+ <div class="coinPanel"><img src="coin.png" alt="coin"><span>${save.coins}</span></div>
  <div class="mode-grid">
- ${Object.entries(DIFF).map(([k,v])=>`<div class="card ${save.difficulty===k?'active':''}" data-mode="${k}"><b>${v.name}</b><div class="small">Win reward: ${v.reward} 🪙<br>${k==='easy'?'Relaxed AI':k==='normal'?'Balanced challenge':k==='hard'?'Fast & accurate':'Current brutal AI'}</div></div>`).join('')}
+ ${Object.entries(DIFF).map(([k,v])=>`<div class="card modeCard ${v.card} ${save.difficulty===k?'active':''}" data-mode="${k}">
+   <b>${v.name}</b>
+   <div class="small">Win reward: ${v.reward} coins<br>${k==='easy'?'Relaxed AI':k==='normal'?'Balanced challenge':k==='hard'?'Fast & accurate':'Current brutal AI'}</div>
+ </div>`).join('')}
  </div>
- <div class="row"><button id="play">PLAY</button><button id="shop" class="secondary">SHOP</button></div>`;
+ <div class="row">
+   <button id="play">PLAY</button>
+   <button id="shop" class="secondary"><span class="shopBtnContent"><img src="shop-white.png" alt="shop">SHOP</span></button>
+ </div>`;
  document.querySelectorAll('[data-mode]').forEach(el=>el.onclick=()=>{save.difficulty=el.dataset.mode;persist();menu()});
  document.getElementById('play').onclick=startGame;
- document.getElementById('shop').onclick=()=>shop('themes');
+ document.getElementById('shop').onclick=()=>{returnToPauseAfterShop=false; shop('themes')};
 }
-function shop(tab){
- center.style.display='grid';
- const items=tab==='themes'?THEMES:GEAR, owned=tab==='themes'?save.ownedThemes:save.ownedGear, active=tab==='themes'?save.theme:save.gear;
- panel.innerHTML=`<h1>SHOP</h1><div class="sub">Coins stay saved on this phone/browser.</div>
- <div id="coinBox">${save.coins} 🪙</div>
- <div class="tabs"><button class="${tab==='themes'?'':'secondary'}" id="themesTab">THEMES</button><button class="${tab==='gear'?'':'secondary'}" id="gearTab">BALL + BARRIERS</button></div>
- <div class="shop-grid">${Object.entries(items).map(([k,v])=>{
-  const has=owned.includes(k), isActive=active===k;
-  return `<div class="card ${isActive?'active':''}"><b>${v.name}</b><div class="small">${isActive?'EQUIPPED':has?'Owned':v.price+' 🪙'}</div><div style="margin-top:10px"><button data-buy="${k}" ${isActive?'disabled':''} class="${has?'secondary':''}">${isActive?'ACTIVE':has?'EQUIP':'BUY'}</button></div></div>`
- }).join('')}</div><div class="row"><button class="secondary" id="back">BACK</button></div>`;
- document.getElementById('themesTab').onclick=()=>shop('themes');document.getElementById('gearTab').onclick=()=>shop('gear');document.getElementById('back').onclick=menu;
- document.querySelectorAll('[data-buy]').forEach(btn=>btn.onclick=()=>{
-   const k=btn.dataset.buy,v=items[k],has=owned.includes(k);
-   if(!has){if(save.coins<v.price){showMessage('NOT ENOUGH COINS','#ff5d75');return}save.coins-=v.price;owned.push(k)}
-   if(tab==='themes')save.theme=k;else save.gear=k;persist();shop(tab);
+
+function themePreviewHTML(t,bColor='#dfff3f'){
+  return `<div class="preview-theme" style="background:linear-gradient(135deg,${t.bg1},${t.bg2});--grid:${t.grid};--arena:${t.arena};--ball:${bColor}">
+    <div class="grid"></div>
+    <div class="arena"></div>
+    <div class="centerline"></div>
+    <div class="paddle left"></div><div class="paddle right"></div><div class="ball"></div>
+  </div>`;
+}
+function ballPreviewHTML(color){
+  return `<div class="preview-ballWrap" style="--ball:${color}">
+    <div class="arena"></div>
+    <div class="ball"></div>
+  </div>`;
+}
+
+function shop(tab='themes'){
+ center.style.display='grid'; setPauseButton(false);
+ const activeBall=BALLS[save.ball];
+ panel.innerHTML=`<div class="shopHeader"><img src="shop-white.png" alt="shop"><h1>SHOP</h1></div>
+ <div class="sub">Unlock looks with coins. Themes now change both the background and the arena barriers.</div>
+ <div class="coinPanel"><img src="coin.png" alt="coin"><span>${save.coins}</span></div>
+ <div class="tabs">
+   <button class="${tab==='themes'?'':'secondary'}" id="themesTab">THEMES</button>
+   <button class="${tab==='balls'?'':'secondary'}" id="ballsTab">BALLS</button>
+ </div>
+ <div class="shop-grid">
+   ${tab==='themes'
+    ? Object.entries(THEMES).map(([k,v])=>{
+        const has=save.ownedThemes.includes(k), isActive=save.theme===k;
+        return `<div class="card ${isActive?'active':''}">
+          <b>${v.name}</b>
+          <div class="small">${isActive?'Equipped':has?'Owned':v.price+' coins'}</div>
+          ${themePreviewHTML(v, activeBall.color)}
+          <div style="margin-top:10px"><button data-item="${k}" data-tab="themes" ${isActive?'disabled':''} class="${has?'secondary':''}">${isActive?'ACTIVE':has?'EQUIP':'BUY'}</button></div>
+        </div>`;
+      }).join('')
+    : Object.entries(BALLS).map(([k,v])=>{
+        const has=save.ownedBalls.includes(k), isActive=save.ball===k;
+        return `<div class="card ${isActive?'active':''}">
+          <b>${v.name}</b>
+          <div class="small">${isActive?'Equipped':has?'Owned':v.price+' coins'}</div>
+          ${ballPreviewHTML(v.color)}
+          <div style="margin-top:10px"><button data-item="${k}" data-tab="balls" ${isActive?'disabled':''} class="${has?'secondary':''}">${isActive?'ACTIVE':has?'EQUIP':'BUY'}</button></div>
+        </div>`;
+      }).join('')
+   }
+ </div>
+ <div class="row">
+   <button class="secondary" id="back">${returnToPauseAfterShop?'BACK TO PAUSE':'BACK'}</button>
+ </div>`;
+
+ document.getElementById('themesTab').onclick=()=>shop('themes');
+ document.getElementById('ballsTab').onclick=()=>shop('balls');
+ document.getElementById('back').onclick=()=>{ if(returnToPauseAfterShop && state.paused) pauseMenu(); else menu(); };
+
+ document.querySelectorAll('[data-item]').forEach(btn=>btn.onclick=()=>{
+   const tab=btn.dataset.tab, k=btn.dataset.item;
+   if(tab==='themes'){
+     const v=THEMES[k], has=save.ownedThemes.includes(k);
+     if(!has){ if(save.coins<v.price){ showMessage('NOT ENOUGH COINS','#ff5d75'); return; } save.coins-=v.price; save.ownedThemes.push(k); }
+     save.theme=k;
+   }else{
+     const v=BALLS[k], has=save.ownedBalls.includes(k);
+     if(!has){ if(save.coins<v.price){ showMessage('NOT ENOUGH COINS','#ff5d75'); return; } save.coins-=v.price; save.ownedBalls.push(k); }
+     save.ball=k;
+   }
+   persist(); shop(tab);
  });
 }
-function startGame(){audio();state.playing=true;state.pScore=state.aScore=0;pScoreEl.textContent=aScoreEl.textContent='0';center.style.display='none';player.y=cpu.y=H/2;ball.vx=ball.vy=0;showMessage('READY','#fff');setTimeout(()=>{showMessage('GO!','#63ffe8');resetBall(Math.random()<.5?1:-1)},650)}
+
+function startGame(){
+ audio(); state.playing=true; state.paused=false; state.pScore=state.aScore=0; state.rally=0;
+ pScoreEl.textContent='0'; aScoreEl.textContent='0'; center.style.display='none'; setPauseButton(true);
+ player.y=cpu.y=H/2; ball.vx=ball.vy=0; showMessage('READY','#fff');
+ setTimeout(()=>{ showMessage('GO!','#63ffe8'); resetBall(Math.random()<.5?1:-1) },650);
+}
 function resetBall(dir=1){ball.x=W/2;ball.y=H/2;ball.speed=620;state.rally=0;const a=Math.random()*.6-.3;ball.vx=Math.cos(a)*ball.speed*dir;ball.vy=Math.sin(a)*ball.speed;trail=[]}
 function showMessage(txt,color='#fff'){message.textContent=txt;message.style.color=color;message.animate([{opacity:0,transform:'translate(-50%,-50%) scale(.55)'},{opacity:1,transform:'translate(-50%,-50%) scale(1.08)',offset:.35},{opacity:0,transform:'translate(-50%,-50%) scale(1.25)'}],{duration:520})}
 function clamp(v,a,b){return Math.max(a,Math.min(b,v))}
 function burst(x,y,c,n=25,p=360){for(let i=0;i<n;i++){let a=Math.random()*Math.PI*2,s=70+Math.random()*p;particles.push({x,y,vx:Math.cos(a)*s,vy:Math.sin(a)*s,life:.25+Math.random()*.4,max:.65,size:2+Math.random()*4,color:c})}}
 function ring(x,y,c){rings.push({x,y,r:8,life:.35,max:.35,color:c})}
 
-addEventListener('keydown',e=>{keys.add(e.key.toLowerCase());if(e.code==='Space'&&!state.playing)startGame()});addEventListener('keyup',e=>keys.delete(e.key.toLowerCase()));
+function pauseGame(){ state.paused=true; center.style.display='grid'; setPauseButton(false); pauseMenu(); }
+function resumeGame(){ state.paused=false; center.style.display='none'; setPauseButton(true); showMessage('RESUME','#ffffff'); }
+function pauseMenu(){
+  center.style.display='grid'; setPauseButton(false);
+  panel.innerHTML=`<h1>PAUSED</h1>
+   <div class="sub">Take a break. You can resume, visit the shop, or go back to mode select.</div>
+   <div class="row">
+     <button id="resume">RESUME</button>
+     <button id="pauseShop" class="secondary"><span class="shopBtnContent"><img src="shop-white.png" alt="shop">SHOP</span></button>
+     <button id="pauseModes" class="secondary">MODES</button>
+   </div>`;
+  document.getElementById('resume').onclick=resumeGame;
+  document.getElementById('pauseShop').onclick=()=>{returnToPauseAfterShop=true; shop('themes')};
+  document.getElementById('pauseModes').onclick=()=>{state.playing=false; state.paused=false; menu();};
+}
+
+addEventListener('keydown',e=>{
+  keys.add(e.key.toLowerCase());
+  if(e.code==='Space' && !state.playing) startGame();
+  if(e.key.toLowerCase()==='p' && state.playing){ if(state.paused) resumeGame(); else pauseGame(); }
+  if(e.key==='Escape' && state.playing){ if(state.paused) resumeGame(); else pauseGame(); }
+});
+addEventListener('keyup',e=>keys.delete(e.key.toLowerCase()));
 function ptr(e){const r=canvas.getBoundingClientRect();player.targetY=(e.touches?e.touches[0].clientY:e.clientY)-r.top}
 canvas.addEventListener('mousemove',ptr);canvas.addEventListener('touchmove',e=>{e.preventDefault();ptr(e)},{passive:false});
 
 function collide(p,isPlayer){
  const px1=p.x-p.w/2,px2=p.x+p.w/2,py1=p.y-p.h/2,py2=p.y+p.h/2;
  if(ball.x+ball.r>px1&&ball.x-ball.r<px2&&ball.y+ball.r>py1&&ball.y-ball.r<py2&&((isPlayer&&ball.vx<0)||(!isPlayer&&ball.vx>0))){
-   const rel=clamp((ball.y-p.y)/(p.h/2),-1,1),d=isPlayer?1:-1,c=isPlayer?GEAR[save.gear].p1:GEAR[save.gear].p2;
-   state.rally++;ball.speed=Math.min(1500,620+state.rally*DIFF[save.difficulty].speedRamp);
-   const ang=rel*.92;ball.vx=Math.cos(ang)*ball.speed*d;ball.vy=Math.sin(ang)*ball.speed+p.vy*.2;
-   ball.x=isPlayer?px2+ball.r+2:px1-ball.r-2;burst(ball.x,ball.y,c,16+state.rally,260);ring(ball.x,ball.y,c);state.shake=Math.min(16,4+state.rally*.6);hitSfx();
+   const rel=clamp((ball.y-p.y)/(p.h/2),-1,1),d=isPlayer?1:-1,c=THEMES[save.theme].arena;
+   state.rally++; ball.speed=Math.min(1500,620+state.rally*DIFF[save.difficulty].speedRamp);
+   const ang=rel*.92; ball.vx=Math.cos(ang)*ball.speed*d; ball.vy=Math.sin(ang)*ball.speed+p.vy*.2;
+   ball.x=isPlayer?px2+ball.r+2:px1-ball.r-2; burst(ball.x,ball.y,c,16+state.rally,260); ring(ball.x,ball.y,c); state.shake=Math.min(16,4+state.rally*.6); hitSfx();
  }
 }
 function score(win){
- if(win)state.pScore++;else state.aScore++;pScoreEl.textContent=state.pScore;aScoreEl.textContent=state.aScore;scoreSfx(win);showMessage(win?'POINT!':'CPU SCORES',win?'#63ffe8':'#ff4fc6');state.shake=18;
- if(state.pScore>=7||state.aScore>=7){state.playing=false;ball.vx=ball.vy=0;setTimeout(()=>endGame(state.pScore>state.aScore),550)}
- else{ball.vx=ball.vy=0;setTimeout(()=>resetBall(win?-1:1),520)}
+ if(win)state.pScore++; else state.aScore++;
+ pScoreEl.textContent=state.pScore; aScoreEl.textContent=state.aScore; scoreSfx(win); showMessage(win?'POINT!':'CPU SCORES',win?'#63ffe8':'#ff4fc6'); state.shake=18;
+ if(state.pScore>=7 || state.aScore>=7){ state.playing=false; state.paused=false; ball.vx=ball.vy=0; setPauseButton(false); setTimeout(()=>endGame(state.pScore>state.aScore),550) }
+ else { ball.vx=ball.vy=0; setTimeout(()=>resetBall(win?-1:1),520) }
 }
 function endGame(win){
- let reward=0;if(win){reward=DIFF[save.difficulty].reward;save.coins+=reward;persist()}
- center.style.display='grid';panel.innerHTML=`<h1>${win?'YOU <span>WIN</span>':'<span>CPU</span> WINS'}</h1><div class="sub">Final score: <b>${state.pScore} – ${state.aScore}</b><br>${win?`You earned <b>${reward} coins</b>.`:'No coins this round. Try a lower mode or run it back.'}</div><div id="coinBox">${save.coins} 🪙</div><div class="row"><button id="again">PLAY AGAIN</button><button id="shop2" class="secondary">SHOP</button><button id="menu2" class="secondary">MODES</button></div>`;
- document.getElementById('again').onclick=startGame;document.getElementById('shop2').onclick=()=>shop('themes');document.getElementById('menu2').onclick=menu;
+ let reward=0; if(win){ reward=DIFF[save.difficulty].reward; save.coins+=reward; persist(); }
+ center.style.display='grid'; panel.innerHTML=`<h1>${win?'YOU <span>WIN</span>':'<span>CPU</span> WINS'}</h1>
+ <div class="sub">Final score: <b>${state.pScore} – ${state.aScore}</b><br>${win?`You earned <b>${reward} coins</b>.`:'No coins this round. Try a lower mode or run it back.'}</div>
+ <div class="coinPanel"><img src="coin.png" alt="coin"><span>${save.coins}</span></div>
+ <div class="row">
+   <button id="again">PLAY AGAIN</button>
+   <button id="shop2" class="secondary"><span class="shopBtnContent"><img src="shop-white.png" alt="shop">SHOP</span></button>
+   <button id="menu2" class="secondary">MODES</button>
+ </div>`;
+ document.getElementById('again').onclick=startGame;
+ document.getElementById('shop2').onclick=()=>{returnToPauseAfterShop=false; shop('themes')};
+ document.getElementById('menu2').onclick=menu;
 }
 
 function update(dt){
- state.time+=dt;state.shake*=Math.pow(.001,dt);if(!state.playing)return;
- player.h=cpu.h=clamp(H*.18,92,132);player.x=34;cpu.x=W-34;
- let dy=0;if(keys.has('w')||keys.has('arrowup'))dy--;if(keys.has('s')||keys.has('arrowdown'))dy++;
- let oy=player.y;if(dy){player.y+=dy*690*dt;player.targetY=player.y}else player.y+=(player.targetY-player.y)*Math.min(1,dt*16);player.y=clamp(player.y,player.h/2+16,H-player.h/2-16);player.vy=(player.y-oy)/Math.max(dt,.001);
+ state.time+=dt; state.shake*=Math.pow(.001,dt);
+ if(!state.playing || state.paused) return;
 
- const d=DIFF[save.difficulty];let target=H/2;
+ player.h=cpu.h=clamp(H*.18,92,132); player.x=34; cpu.x=W-34;
+ let dy=0; if(keys.has('w')||keys.has('arrowup'))dy--; if(keys.has('s')||keys.has('arrowdown'))dy++;
+ let oy=player.y;
+ if(dy){ player.y+=dy*690*dt; player.targetY=player.y } else player.y+=(player.targetY-player.y)*Math.min(1,dt*16);
+ player.y=clamp(player.y,player.h/2+16,H-player.h/2-16); player.vy=(player.y-oy)/Math.max(dt,.001);
+
+ const d=DIFF[save.difficulty]; let target=H/2;
  if(ball.vx>0){
    const t=(cpu.x-ball.x)/ball.vx;
    let predicted=ball.y+ball.vy*t*d.predict+(1-d.predict)*(ball.y);
-   const min=ball.r+18,max=H-ball.r-18,span=max-min;let q=(predicted-min)%(span*2);if(q<0)q+=span*2;target=min+(q>span?span*2-q:q);
- }else target=H/2+Math.sin(state.time*1.4)*H*.12;
- target+=Math.sin(state.time*2.1)*d.error+Math.sin(state.time*.73)*d.error*.45;
- let oc=cpu.y,diff=target-cpu.y;cpu.y+=clamp(diff,-d.cpu*dt,d.cpu*dt);cpu.y=clamp(cpu.y,cpu.h/2+16,H-cpu.h/2-16);cpu.vy=(cpu.y-oc)/Math.max(dt,.001);
+   const min=ball.r+18,max=H-ball.r-18,span=max-min; let q=(predicted-min)%(span*2); if(q<0)q+=span*2; target=min+(q>span?span*2-q:q);
+ } else target=H/2+Math.sin(state.time*1.4)*H*.12;
+ target += Math.sin(state.time*2.1)*d.error + Math.sin(state.time*.73)*d.error*.45;
+ let oc=cpu.y, diff=target-cpu.y; cpu.y+=clamp(diff,-d.cpu*dt,d.cpu*dt); cpu.y=clamp(cpu.y,cpu.h/2+16,H-cpu.h/2-16); cpu.vy=(cpu.y-oc)/Math.max(dt,.001);
 
- trail.push({x:ball.x,y:ball.y,life:.18});if(trail.length>28)trail.shift();
- ball.x+=ball.vx*dt;ball.y+=ball.vy*dt;
+ trail.push({x:ball.x,y:ball.y,life:.18}); if(trail.length>28)trail.shift();
+ ball.x+=ball.vx*dt; ball.y+=ball.vy*dt;
  if(ball.y-ball.r<14&&ball.vy<0){ball.y=14+ball.r;ball.vy*=-1;ring(ball.x,ball.y,'#fff')}
  if(ball.y+ball.r>H-14&&ball.vy>0){ball.y=H-14-ball.r;ball.vy*=-1;ring(ball.x,ball.y,'#fff')}
- collide(player,true);collide(cpu,false);
- if(ball.x<-50)score(false);else if(ball.x>W+50)score(true);
- particles.forEach(p=>{p.x+=p.vx*dt;p.y+=p.vy*dt;p.vx*=Math.pow(.06,dt);p.vy*=Math.pow(.06,dt);p.life-=dt});particles=particles.filter(p=>p.life>0);
- rings.forEach(r=>{r.r+=650*dt;r.life-=dt});rings=rings.filter(r=>r.life>0);trail.forEach(t=>t.life-=dt);trail=trail.filter(t=>t.life>0);
+ collide(player,true); collide(cpu,false);
+ if(ball.x<-50)score(false); else if(ball.x>W+50)score(true);
+ particles.forEach(p=>{p.x+=p.vx*dt;p.y+=p.vy*dt;p.vx*=Math.pow(.06,dt);p.vy*=Math.pow(.06,dt);p.life-=dt}); particles=particles.filter(p=>p.life>0);
+ rings.forEach(r=>{r.r+=650*dt;r.life-=dt}); rings=rings.filter(r=>r.life>0);
+ trail.forEach(t=>t.life-=dt); trail=trail.filter(t=>t.life>0);
 }
 function rr(x,y,w,h,r){ctx.beginPath();ctx.roundRect(x,y,w,h,r)}
 function draw(){
- const th=THEMES[save.theme],ge=GEAR[save.gear],sx=(Math.random()-.5)*state.shake,sy=(Math.random()-.5)*state.shake;ctx.save();ctx.translate(sx,sy);
- const g=ctx.createLinearGradient(0,0,W,H);g.addColorStop(0,th.bg1);g.addColorStop(1,th.bg2);ctx.fillStyle=g;ctx.fillRect(-40,-40,W+80,H+80);
- ctx.globalAlpha=.16;ctx.strokeStyle=th.grid;ctx.lineWidth=1;const sp=48,off=(state.time*22)%sp;for(let x=-sp+off;x<W+sp;x+=sp){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke()}for(let y=-sp+off;y<H+sp;y+=sp){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke()}ctx.globalAlpha=1;
- ctx.strokeStyle=ge.p1;ctx.lineWidth=3;ctx.shadowColor=ge.p1;ctx.shadowBlur=18;rr(10,10,W-20,H-20,18);ctx.stroke();ctx.shadowBlur=0;
- ctx.setLineDash([12,18]);ctx.strokeStyle='rgba(255,255,255,.22)';ctx.beginPath();ctx.moveTo(W/2,28);ctx.lineTo(W/2,H-28);ctx.stroke();ctx.setLineDash([]);
- rings.forEach(r=>{ctx.globalAlpha=Math.max(0,r.life/r.max)*.7;ctx.strokeStyle=r.color;ctx.lineWidth=4;ctx.shadowColor=r.color;ctx.shadowBlur=15;ctx.beginPath();ctx.arc(r.x,r.y,r.r,0,Math.PI*2);ctx.stroke()});ctx.shadowBlur=0;ctx.globalAlpha=1;
- trail.forEach(t=>{let a=Math.max(0,t.life/.18);ctx.globalAlpha=a*.35;ctx.fillStyle=ge.ball;ctx.beginPath();ctx.arc(t.x,t.y,ball.r*a,0,Math.PI*2);ctx.fill()});ctx.globalAlpha=1;
- function paddle(p,c){rr(p.x-p.w/2,p.y-p.h/2,p.w,p.h,8);ctx.fillStyle='#f9fbff';ctx.shadowColor=c;ctx.shadowBlur=20;ctx.fill();ctx.shadowBlur=0;ctx.strokeStyle=c;ctx.lineWidth=4;ctx.stroke()}
- paddle(player,ge.p1);paddle(cpu,ge.p2);
- ctx.fillStyle=ge.ball;ctx.shadowColor=ge.ball;ctx.shadowBlur=24;ctx.beginPath();ctx.arc(ball.x,ball.y,ball.r,0,Math.PI*2);ctx.fill();ctx.shadowBlur=0;ctx.strokeStyle='#05070b';ctx.lineWidth=5;ctx.stroke();ctx.strokeStyle='#fff';ctx.lineWidth=2;ctx.stroke();
- particles.forEach(p=>{ctx.globalAlpha=Math.max(0,p.life/p.max);ctx.fillStyle=p.color;ctx.fillRect(p.x,p.y,p.size,p.size)});ctx.globalAlpha=1;
+ const th=THEMES[save.theme], b=BALLS[save.ball], sx=(Math.random()-.5)*state.shake, sy=(Math.random()-.5)*state.shake;
+ ctx.save(); ctx.translate(sx,sy);
+
+ const g=ctx.createLinearGradient(0,0,W,H); g.addColorStop(0,th.bg1); g.addColorStop(1,th.bg2); ctx.fillStyle=g; ctx.fillRect(-40,-40,W+80,H+80);
+
+ ctx.globalAlpha=.16; ctx.strokeStyle=th.grid; ctx.lineWidth=1; const sp=48,off=(state.time*22)%sp;
+ for(let x=-sp+off;x<W+sp;x+=sp){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke()}
+ for(let y=-sp+off;y<H+sp;y+=sp){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke()}
+ ctx.globalAlpha=1;
+
+ ctx.strokeStyle=th.arena; ctx.lineWidth=3; ctx.shadowColor=th.arena; ctx.shadowBlur=18; rr(10,10,W-20,H-20,18); ctx.stroke(); ctx.shadowBlur=0;
+ ctx.setLineDash([12,18]); ctx.strokeStyle='rgba(255,255,255,.22)'; ctx.beginPath(); ctx.moveTo(W/2,28); ctx.lineTo(W/2,H-28); ctx.stroke(); ctx.setLineDash([]);
+
+ rings.forEach(r=>{ctx.globalAlpha=Math.max(0,r.life/r.max)*.7;ctx.strokeStyle=r.color;ctx.lineWidth=4;ctx.shadowColor=r.color;ctx.shadowBlur=15;ctx.beginPath();ctx.arc(r.x,r.y,r.r,0,Math.PI*2);ctx.stroke()}); ctx.shadowBlur=0; ctx.globalAlpha=1;
+ trail.forEach(t=>{let a=Math.max(0,t.life/.18);ctx.globalAlpha=a*.35;ctx.fillStyle=b.color;ctx.beginPath();ctx.arc(t.x,t.y,ball.r*a,0,Math.PI*2);ctx.fill()}); ctx.globalAlpha=1;
+
+ function paddle(p){
+   rr(p.x-p.w/2,p.y-p.h/2,p.w,p.h,8); ctx.fillStyle='#f9fbff'; ctx.shadowColor=th.arena; ctx.shadowBlur=20; ctx.fill(); ctx.shadowBlur=0; ctx.strokeStyle=th.arena; ctx.lineWidth=4; ctx.stroke()
+ }
+ paddle(player); paddle(cpu);
+
+ ctx.fillStyle=b.color; ctx.shadowColor=b.color; ctx.shadowBlur=24; ctx.beginPath(); ctx.arc(ball.x,ball.y,ball.r,0,Math.PI*2); ctx.fill(); ctx.shadowBlur=0;
+ ctx.strokeStyle='#05070b'; ctx.lineWidth=5; ctx.stroke(); ctx.strokeStyle='#fff'; ctx.lineWidth=2; ctx.stroke();
+
+ particles.forEach(p=>{ctx.globalAlpha=Math.max(0,p.life/p.max);ctx.fillStyle=p.color;ctx.fillRect(p.x,p.y,p.size,p.size)}); ctx.globalAlpha=1;
  ctx.restore();
 }
-function loop(now){const dt=Math.min(.025,(now-last)/1000);last=now;update(dt);draw();requestAnimationFrame(loop)}requestAnimationFrame(loop);
+function loop(now){const dt=Math.min(.025,(now-last)/1000); last=now; update(dt); draw(); requestAnimationFrame(loop)} requestAnimationFrame(loop);
 
-let deferredPrompt=null;window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPrompt=e});
-if('serviceWorker'in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js'));
+if('serviceWorker' in navigator) window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js'));
 menu();
 })();
 </script>
-</body></html>
+</body>
+</html>
