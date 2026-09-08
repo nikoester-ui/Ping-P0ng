@@ -1,7 +1,7 @@
 {
   "name": "NEON PING // OVERDRIVE",
   "short_name": "Neon Ping",
-  "description": "Fast neon arcade ping pong with crazy VFX, SFX and challenging AI.",
+  "description": "Fast neon arcade ping pong with modes, coins and unlockable themes.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
