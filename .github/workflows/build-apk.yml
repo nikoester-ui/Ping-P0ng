@@ -1,0 +1,92 @@
+name: Build Neon Ping Arena APK
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  build-android:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+
+      - name: Prepare game files
+        run: |
+          rm -rf mobile-build
+          mkdir -p mobile-build/www
+          cp index.html mobile-build/www/
+          [ -f manifest.webmanifest ] && cp manifest.webmanifest mobile-build/www/ || true
+          [ -f leaderboard-config.js ] && cp leaderboard-config.js mobile-build/www/ || true
+          find . -maxdepth 1 -type f \( -name "*.png" -o -name "*.jpg" -o -name "*.jpeg" -o -name "*.webp" -o -name "*.svg" -o -name "*.mp3" -o -name "*.wav" -o -name "*.ogg" \) -exec cp {} mobile-build/www/ \;
+
+      - name: Install Capacitor 8
+        working-directory: mobile-build
+        run: |
+          npm init -y
+          npm install @capacitor/core@8 @capacitor/cli@8 @capacitor/android@8
+
+      - name: Configure Android app
+        working-directory: mobile-build
+        run: |
+          cat > capacitor.config.json <<'EOF'
+          {
+            "appId": "com.nikoesterui.neonpingarena",
+            "appName": "Neon Ping Arena",
+            "webDir": "www",
+            "server": {
+              "androidScheme": "https"
+            }
+          }
+          EOF
+          npx cap add android
+
+      - name: Force landscape orientation
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p = Path("mobile-build/android/app/src/main/AndroidManifest.xml")
+          s = p.read_text()
+          pos = s.find("<activity")
+          end = s.find(">", pos)
+          block = s[pos:end]
+          if 'android:screenOrientation=' not in block:
+              s = s[:end] + '\n            android:screenOrientation="landscape"' + s[end:]
+          p.write_text(s)
+          PY
+
+      - name: Sync Android
+        working-directory: mobile-build
+        run: npx cap sync android
+
+      - name: Build APK
+        working-directory: mobile-build/android
+        run: |
+          chmod +x gradlew
+          ./gradlew assembleDebug
+
+      - name: Rename APK
+        run: |
+          cp mobile-build/android/app/build/outputs/apk/debug/app-debug.apk Neon-Ping-Arena-v1.07.1.apk
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: Neon-Ping-Arena-v1.07.1-APK
+          path: Neon-Ping-Arena-v1.07.1.apk
