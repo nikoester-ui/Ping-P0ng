@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
-<title>NEON PING</title>
+<title>Neon Ping Arena</title>
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#05060a">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -57,6 +57,72 @@ button:active,.card:active{transform:scale(.98)}
 #rotateNote{display:none;position:absolute;inset:0;z-index:60;background:#05060a;place-items:center;text-align:center;padding:30px}
 @media(max-width:760px){#wrap{width:100vw;height:100vh;max-height:none;aspect-ratio:auto;border:0;border-radius:0}.panel{width:94%;padding:18px 13px}.cardGrid{grid-template-columns:1fr 1fr}.modePick{grid-template-columns:1fr 1fr}.hudPill{padding:6px 8px;font-size:10px}.scoreLabel{font-size:24px}#pauseBtn{right:8px;top:52px}.preview,.ballPreview{height:90px}}
 @media(orientation:portrait) and (max-width:900px){#rotateNote{display:grid}}
+
+.leaderList{display:grid;gap:8px;margin:16px 0;text-align:left}
+.leaderRow{display:grid;grid-template-columns:44px 1fr auto auto;gap:10px;align-items:center;padding:11px 12px;border:1px solid rgba(255,255,255,.11);border-radius:14px;background:rgba(255,255,255,.035)}
+.leaderRank{font-size:20px;font-weight:950;color:#ffdf57;text-align:center}.leaderName{font-weight:950}.leaderMeta{font-size:11px;color:rgba(255,255,255,.55);margin-top:2px}
+.leaderScore{font-weight:950;color:#63ffe8}.leaderReward{font-weight:900;color:#ffdf57}
+.ballFx{position:relative;width:100%;height:100%;display:grid;place-items:center;overflow:hidden}
+.ballFx img{position:relative;z-index:3;width:72px;height:72px;object-fit:contain;animation:ballFloat 2.2s ease-in-out infinite}
+.ballFx::before,.ballFx::after{content:"";position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);pointer-events:none}
+.fx-classic img{animation:ballFloat 2.2s ease-in-out infinite,ballSpin 7s linear infinite}
+.fx-fire::before{width:78px;height:78px;border-radius:50%;background:radial-gradient(circle,#ffd467 0 18%,#ff6a00 42%,rgba(255,50,0,0) 72%);filter:blur(7px);animation:firePulse .55s ease-in-out infinite alternate}
+.fx-fire::after{width:46px;height:98px;border-radius:50%;background:linear-gradient(to top,rgba(255,50,0,0),rgba(255,90,0,.72),rgba(255,235,90,0));filter:blur(7px);animation:flameDance .38s ease-in-out infinite alternate}
+.fx-ice::before{width:88px;height:88px;border:2px solid rgba(160,235,255,.7);border-radius:50%;box-shadow:0 0 18px rgba(120,220,255,.75),inset 0 0 16px rgba(120,220,255,.32);animation:ringSpin 2.7s linear infinite}
+.fx-ice::after{width:5px;height:5px;border-radius:50%;background:#fff;box-shadow:31px 8px #bdf3ff,-29px -12px #dfffff,14px -34px #9feaff,-20px 31px #fff;animation:sparkOrbit 2s linear infinite}
+.fx-eight::before{width:88px;height:88px;border-radius:50%;border:1px dashed rgba(255,255,255,.48);animation:ringSpin 3.5s linear infinite}
+.fx-eight::after{width:8px;height:8px;border-radius:50%;background:#fff;box-shadow:0 0 13px #fff;animation:orbitDot 2.2s linear infinite}
+.fx-plasma::before{width:92px;height:92px;border-radius:50%;background:conic-gradient(from 0deg,transparent,#d75cff,transparent,#59d7ff,transparent);filter:blur(3px);animation:ringSpin .85s linear infinite}
+.fx-plasma::after{width:76px;height:76px;border-radius:50%;border:2px solid rgba(230,120,255,.6);box-shadow:0 0 20px #c54cff,0 0 36px rgba(80,210,255,.55);animation:plasmaPulse .7s ease-in-out infinite alternate}
+@keyframes ballFloat{0%,100%{transform:translateY(-3px)}50%{transform:translateY(4px)}}@keyframes ballSpin{to{rotate:360deg}}
+@keyframes firePulse{from{scale:.86;opacity:.65}to{scale:1.17;opacity:1}}@keyframes flameDance{from{transform:translate(-50%,-50%) skewX(-8deg) scaleY(.9)}to{transform:translate(-50%,-56%) skewX(9deg) scaleY(1.24)}}
+@keyframes ringSpin{to{transform:translate(-50%,-50%) rotate(360deg)}}@keyframes sparkOrbit{to{transform:translate(-50%,-50%) rotate(360deg)}}
+@keyframes orbitDot{0%{transform:translate(-50%,-50%) translateX(43px)}100%{transform:translate(-50%,-50%) rotate(360deg) translateX(43px)}}@keyframes plasmaPulse{from{scale:.86;opacity:.65}to{scale:1.12;opacity:1}}
+
+
+:root{--ui-cyan:#74f3ff;--ui-violet:#a56cff;--ui-gold:#ffd65a;--ui-red:#ff4a55}
+body:before{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(circle at 50% -10%,rgba(70,200,255,.09),transparent 38%),linear-gradient(180deg,rgba(255,255,255,.015),transparent 24%)}
+.panel{border-color:rgba(150,220,255,.17);background:linear-gradient(180deg,rgba(7,13,28,.97),rgba(2,5,12,.96));box-shadow:0 24px 80px rgba(0,0,0,.62),inset 0 1px rgba(255,255,255,.025)}
+.brandKicker{display:flex;justify-content:center;gap:9px;align-items:center;margin-bottom:9px;font-size:11px;font-weight:950;letter-spacing:.24em;color:rgba(220,245,255,.62)}
+.brandKicker span{letter-spacing:.08em;color:var(--ui-cyan);border:1px solid rgba(116,243,255,.28);padding:3px 7px;border-radius:999px;background:rgba(116,243,255,.06)}
+button{min-height:45px;border:1px solid rgba(150,245,255,.28);background:linear-gradient(180deg,#86fff1,#48e8e4);letter-spacing:.04em;text-transform:uppercase;box-shadow:0 0 0 1px rgba(255,255,255,.035) inset,0 8px 24px rgba(55,230,230,.12)}
+button.secondary{background:linear-gradient(180deg,rgba(23,34,56,.92),rgba(9,16,30,.96));border:1px solid rgba(162,213,255,.18)}
+@media (hover:hover) and (pointer:fine){button:hover,.card:hover{transform:translateY(-2px);border-color:rgba(175,245,255,.48);box-shadow:0 0 0 1px rgba(120,240,255,.12) inset,0 0 26px var(--glow,rgba(90,235,255,.18))}}
+.card{background:linear-gradient(180deg,rgba(17,27,48,.76),rgba(6,12,25,.88));border-color:rgba(155,210,255,.13)}
+.card.selected{background:linear-gradient(180deg,rgba(23,41,67,.82),rgba(6,13,27,.94))}
+.modePick .card{min-height:94px}
+#topHud .hudPill{border-color:rgba(150,210,255,.16);background:linear-gradient(180deg,rgba(9,18,34,.88),rgba(4,9,18,.88))}
+.scoreLabel{padding:7px 18px 8px;border-radius:16px;background:linear-gradient(180deg,rgba(10,20,38,.68),rgba(2,6,14,.76));border:1px solid rgba(150,220,255,.12)}
+#pauseBtn{border-color:rgba(160,220,255,.22);background:linear-gradient(180deg,rgba(17,30,49,.92),rgba(6,12,23,.95))}
+.resultScreen{position:relative;overflow:hidden;text-align:center;padding:8px 4px}
+.resultEmblem{width:94px;height:94px;margin:0 auto 14px;border-radius:50%;display:grid;place-items:center;border:2px solid rgba(255,224,98,.72);background:radial-gradient(circle at 40% 35%,#fff0a3,#f4b91c 44%,#7a4100 78%);box-shadow:0 0 34px rgba(255,205,50,.28),inset 0 0 20px rgba(255,255,255,.24);font-size:42px;animation:rewardPop .62s cubic-bezier(.2,1.5,.25,1)}
+.resultTitle{font-size:clamp(44px,7vw,76px);font-weight:1000;letter-spacing:-.045em;line-height:.95}
+.resultTitle.win{color:#dffff8;text-shadow:0 0 28px rgba(90,255,210,.28)}
+.resultTitle.lose{color:#ffd8dc;text-shadow:0 0 28px rgba(255,70,80,.24)}
+.rewardReveal{margin:18px auto;width:min(430px,90%);padding:15px 18px;border-radius:18px;border:1px solid rgba(255,217,78,.28);background:linear-gradient(180deg,rgba(70,48,5,.3),rgba(20,13,2,.36));animation:rewardSlide .7s .18s both cubic-bezier(.2,.9,.2,1)}
+.rewardAmount{display:flex;justify-content:center;align-items:center;gap:10px;font-size:28px;font-weight:1000;color:#ffe173}
+.rewardAmount img{width:34px;height:34px;animation:coinSpin 1.4s ease-in-out infinite}
+.resultStats{font-size:13px;color:rgba(220,240,255,.64);letter-spacing:.08em}
+.confetti{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.confetti i{position:absolute;top:-12%;width:7px;height:14px;border-radius:2px;animation:confettiFall var(--dur) var(--delay) linear infinite}
+.globalStatus{display:inline-flex;align-items:center;gap:7px;margin:8px auto 0;padding:6px 9px;border-radius:999px;font-size:10px;font-weight:900;letter-spacing:.08em;border:1px solid rgba(255,255,255,.12);color:rgba(230,245,255,.68)}
+.globalStatus.online{color:#78ff9c;border-color:rgba(120,255,155,.24);background:rgba(30,150,70,.08)}
+.globalStatus.offline{color:#ffcb75;border-color:rgba(255,190,90,.22);background:rgba(160,90,10,.08)}
+.leaderTop{display:grid;grid-template-columns:1fr auto;align-items:center;gap:10px;text-align:left;margin:10px 0 12px}
+.leaderTop b{font-size:14px}.leaderTop small{display:block;color:rgba(220,240,255,.5);margin-top:2px}
+.leaderRow{grid-template-columns:48px minmax(0,1fr) auto;border-color:rgba(150,215,255,.10);background:linear-gradient(180deg,rgba(12,22,40,.72),rgba(5,11,22,.78))}
+.leaderRow.top1{border-color:rgba(255,214,90,.3);background:linear-gradient(180deg,rgba(75,54,8,.28),rgba(19,14,4,.25))}
+.leaderRow.top2{border-color:rgba(205,230,255,.25)}.leaderRow.top3{border-color:rgba(224,151,93,.25)}
+.leaderScoreBlock{text-align:right}.leaderScoreBlock b{color:#8ffff3}.leaderScoreBlock small{display:block;color:rgba(220,240,255,.46);font-size:10px;margin-top:2px}
+.loadingRing{width:26px;height:26px;border-radius:50%;margin:28px auto;border:3px solid rgba(255,255,255,.1);border-top-color:#72efff;animation:spin .75s linear infinite}
+.toast{position:absolute;left:50%;bottom:24px;z-index:30;transform:translate(-50%,18px);opacity:0;padding:10px 14px;border-radius:12px;background:rgba(5,12,23,.94);border:1px solid rgba(145,220,255,.2);font-size:12px;font-weight:850;color:#e7f9ff;pointer-events:none;transition:.22s}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+@keyframes rewardPop{0%{transform:scale(.3) rotate(-14deg);opacity:0}70%{transform:scale(1.12) rotate(4deg)}100%{transform:scale(1);opacity:1}}
+@keyframes rewardSlide{from{transform:translateY(20px);opacity:0}to{transform:none;opacity:1}}
+@keyframes coinSpin{50%{transform:rotateY(180deg) scale(1.08)}}
+@keyframes confettiFall{to{transform:translateY(720px) rotate(620deg)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+
 </style>
 </head>
 <body>
@@ -69,16 +135,17 @@ button:active,.card:active{transform:scale(.98)}
    <div class="hudSide right"><div class="hudPill coinPill"><img src="coin.png"><span class="coinNum" id="coinHud">0</span></div></div>
  </div>
  <button id="pauseBtn"><span class="pauseBars"><i></i><i></i></span></button>
- <div id="bossHud"><div class="bossText"><span>BOSS HEALTH</span><span id="bossHits">0 / 20 HITS</span></div><div class="healthOuter"><div class="healthInner" id="bossHealth"></div></div></div>
+ <div id="bossHud"><div class="bossText"><span>BOSS HEALTH</span><span id="bossHits">0 / 25 HITS</span></div><div class="healthOuter"><div class="healthInner" id="bossHealth"></div></div></div>
  <div id="message">GO!</div>
 </div>
 <div id="center"><div id="panel" class="panel"></div></div>
 <div id="rotateNote"><div><div style="font-size:48px">↻</div><h2>Rotate your phone</h2><div class="sub">Landscape mode is required for the arena.</div></div></div>
-</div>
+</div><div id="toast" class="toast"></div>
+<script src="leaderboard-config.js"></script>
 <script>
 (()=>{
 const canvas=document.getElementById('game'),ctx=canvas.getContext('2d'),wrap=document.getElementById('wrap'),center=document.getElementById('center'),panel=document.getElementById('panel');
-const scoreText=document.getElementById('scoreText'),scoreSub=document.getElementById('scoreSub'),coinHud=document.getElementById('coinHud'),modePill=document.getElementById('modePill'),pauseBtn=document.getElementById('pauseBtn'),message=document.getElementById('message'),bossHud=document.getElementById('bossHud'),bossHealth=document.getElementById('bossHealth'),bossHits=document.getElementById('bossHits');
+const scoreText=document.getElementById('scoreText'),scoreSub=document.getElementById('scoreSub'),coinHud=document.getElementById('coinHud'),modePill=document.getElementById('modePill'),pauseBtn=document.getElementById('pauseBtn'),message=document.getElementById('message'),bossHud=document.getElementById('bossHud'),bossHealth=document.getElementById('bossHealth'),bossHits=document.getElementById('bossHits'),toast=document.getElementById('toast');
 let W=1280,H=720,DPR=1,last=performance.now(),particles=[],rings=[],trail=[];
 
 const DIFF={
@@ -102,9 +169,9 @@ const BALLS={
  plasma:{name:'Plasma Orb',price:300,img:'ball-plasma.png'}
 };
 const imgs={};
-[...Object.values(THEMES).map(x=>x.img),...Object.values(BALLS).map(x=>x.img),'boss-skull.png'].forEach(src=>{const i=new Image();i.src=src;imgs[src]=i});
+[...Object.values(THEMES).map(x=>x.img),...Object.values(BALLS).map(x=>x.img),'boss-skull.png','boss-skull-0.png','boss-skull-1.png','boss-skull-2.png','boss-skull-3.png','boss-skull-4.png'].forEach(src=>{const i=new Image();i.src=src;imgs[src]=i});
 
-const defaults={coins:0,difficulty:'normal',gameMode:'classic',theme:'space',ball:'classic',ownedThemes:['space'],ownedBalls:['classic']};
+const defaults={coins:0,difficulty:'normal',gameMode:'classic',theme:'space',ball:'classic',ownedThemes:['space'],ownedBalls:['classic'],playerName:'PLAYER',leaderboard:[]};
 let raw={};try{raw=JSON.parse(localStorage.getItem('neonPingSave')||'{}')||{}}catch(e){}
 let save={...defaults,...raw};
 // migration from older builds
@@ -121,11 +188,13 @@ if(!THEMES[save.theme])save.theme='space';
 if(!BALLS[save.ball])save.ball='classic';
 if(!DIFF[save.difficulty])save.difficulty='normal';
 if(!['classic','boss'].includes(save.gameMode))save.gameMode='classic';
+if(typeof save.playerName!=='string'||!save.playerName.trim())save.playerName='PLAYER';
+if(!Array.isArray(save.leaderboard))save.leaderboard=[];
 
 function persist(){localStorage.setItem('neonPingSave',JSON.stringify(save));coinHud.textContent=save.coins}
 persist();
 
-const state={playing:false,paused:false,pointLocked:false,pScore:0,aScore:0,time:0,shake:0,rally:0,bossHP:20,bossMax:20,bossX:0,bossY:0,bossDir:1,bossExploding:false,bossElapsed:0};
+const state={playing:false,paused:false,pointLocked:false,pScore:0,aScore:0,time:0,shake:0,rally:0,bossHP:25,bossMax:25,bossX:0,bossY:0,bossDir:1,bossExploding:false,bossElapsed:0};
 const player={x:36,y:H/2,w:18,h:120,vy:0,targetY:H/2},cpu={x:W-36,y:H/2,w:18,h:120,vy:0},ball={x:W/2,y:H/2,r:13,vx:0,vy:0,speed:590};
 const keys=new Set();
 function resize(){const r=wrap.getBoundingClientRect();DPR=Math.min(2,window.devicePixelRatio||1);canvas.width=Math.round(r.width*DPR);canvas.height=Math.round(r.height*DPR);W=r.width;H=r.height;ctx.setTransform(DPR,0,0,DPR,0,0);state.bossX=state.bossX||W*.78}addEventListener('resize',resize);resize();
@@ -133,7 +202,15 @@ function resize(){const r=wrap.getBoundingClientRect();DPR=Math.min(2,window.dev
 let ac=null;
 function audio(){try{if(!ac)ac=new(window.AudioContext||window.webkitAudioContext)();if(ac.state==='suspended')ac.resume()}catch(e){}}
 function tone(f=440,d=.05,type='sine',v=.04,slide=0){if(!ac)return;const o=ac.createOscillator(),g=ac.createGain();o.type=type;o.frequency.value=f;if(slide)o.frequency.exponentialRampToValueAtTime(Math.max(30,f+slide),ac.currentTime+d);g.gain.value=v;g.gain.exponentialRampToValueAtTime(.0001,ac.currentTime+d);o.connect(g).connect(ac.destination);o.start();o.stop(ac.currentTime+d)}
-function sHit(){audio();tone(190,.05,'square',.04,180);tone(680,.03,'triangle',.025,220)}function sScore(win){audio();tone(win?540:180,.12,win?'triangle':'sawtooth',.05,win?330:-60)}
+function sHit(){audio();tone(175,.035,'square',.035,165);tone(720,.028,'triangle',.023,260);tone(1140,.018,'sine',.012,-180)}
+function sScore(win){audio();if(win){tone(430,.08,'triangle',.038,210);setTimeout(()=>tone(690,.10,'triangle',.036,260),55)}else{tone(185,.12,'sawtooth',.04,-70);setTimeout(()=>tone(118,.14,'square',.025,-28),60)}}
+function sUi(){audio();tone(520,.025,'sine',.015,120)}
+function sBuy(){audio();tone(610,.055,'triangle',.03,180);setTimeout(()=>tone(880,.07,'triangle',.028,220),55)}
+function sReward(){audio();[520,660,820,1040].forEach((f,i)=>setTimeout(()=>tone(f,.13,'triangle',.038,140),i*75))}
+function sVictory(){audio();[392,523,659,784].forEach((f,i)=>setTimeout(()=>tone(f,.2,'triangle',.045,95),i*100));setTimeout(()=>tone(1046,.3,'sine',.035,120),420)}
+function sBossDamage(){audio();tone(105,.09,'sawtooth',.045,70);tone(260,.07,'square',.03,-70)}
+function uiToast(t){toast.textContent=t;toast.classList.add('show');clearTimeout(uiToast.t);uiToast.t=setTimeout(()=>toast.classList.remove('show'),1500)}
+document.addEventListener('pointerdown',e=>{if(e.target.closest('button,.card'))sUi()},{passive:true});
 function clamp(v,a,b){return Math.max(a,Math.min(b,v))}
 function showMessage(t,c='#fff'){message.textContent=t;message.style.color=c;message.animate([{opacity:0,transform:'translate(-50%,-50%) scale(.55)'},{opacity:1,transform:'translate(-50%,-50%) scale(1.06)',offset:.38},{opacity:0,transform:'translate(-50%,-50%) scale(1.25)'}],{duration:600})}
 function burst(x,y,c,n=30,p=380){for(let i=0;i<n;i++){let a=Math.random()*Math.PI*2,s=70+Math.random()*p;particles.push({x,y,vx:Math.cos(a)*s,vy:Math.sin(a)*s,life:.3+Math.random()*.5,max:.8,size:2+Math.random()*5,c})}}
@@ -143,17 +220,59 @@ function showPause(show){pauseBtn.classList.toggle('show',show)}
 
 function mainMenu(){
  state.playing=false;state.paused=false;center.style.display='grid';showPause(false);bossHud.classList.remove('show');refreshHud();
- panel.innerHTML=`<h1>NEON <span>PING</span></h1><div class="sub">Choose your challenge, win matches, earn coins, and unlock entirely different arenas and ball designs.</div>
+ panel.innerHTML=`<div class="brandKicker">NEON PING ARENA <span>v1.07</span></div><h1>NEON <span>PING</span></h1><div class="sub">Enter the arena. Master the AI, defeat the boss, climb the global rankings, and build your collection.</div>
  <div class="coinBig"><img src="coin.png">${save.coins}</div>
  <div class="modePick">
    <div class="card ${save.gameMode==='classic'?'selected':''}" data-gamemode="classic" style="--accent:#63ffe8"><b>CLASSIC</b><div class="sub" style="margin:6px 0 0">First to 5 points against the AI.</div></div>
-   <div class="card bossCard ${save.gameMode==='boss'?'selected':''}" data-gamemode="boss"><img class="diffIcon" src="boss-skull.png"><b>BOSS MODE</b><div class="sub" style="margin:6px 0 0">20 hits. The skull always catches the return and keeps closing in. Reward: 50 coins.</div></div>
+   <div class="card bossCard ${save.gameMode==='boss'?'selected':''}" data-gamemode="boss"><img class="diffIcon" src="boss-skull.png"><b>BOSS MODE</b><div class="sub" style="margin:6px 0 0">25 hits. The skull visibly breaks every 5 hits and keeps closing in. Reward: 50 coins.</div></div>
  </div>
  ${save.gameMode==='classic'?`<div class="cardGrid">${Object.entries(DIFF).map(([k,v])=>`<div class="card ${k} ${save.difficulty===k?'selected':''}" data-diff="${k}"><div class="cardTitle"><img class="diffIcon" src="${v.icon}"><span>${v.name}</span></div><div class="sub" style="margin:8px 0 0">${v.desc}</div><div class="reward"><img src="coin.png">${v.reward} COINS PER MATCH WIN</div></div>`).join('')}</div>`:''}
- <div class="row"><button id="play">PLAY</button><button class="secondary" id="shop"><span style="display:flex;gap:8px;align-items:center"><img src="shop-white.png" style="width:18px">SHOP</span></button></div>`;
+ <div class="row"><button id="play">PLAY</button><button class="secondary" id="shop"><span style="display:flex;gap:8px;align-items:center"><img src="shop-white.png" style="width:18px">SHOP</span></button><button class="secondary" id="leaderboard">LEADERBOARD</button></div>`;
  document.querySelectorAll('[data-gamemode]').forEach(el=>el.onclick=()=>{save.gameMode=el.dataset.gamemode;persist();mainMenu()});
  document.querySelectorAll('[data-diff]').forEach(el=>el.onclick=()=>{save.difficulty=el.dataset.diff;persist();mainMenu()});
- document.getElementById('play').onclick=startGame;document.getElementById('shop').onclick=()=>shop('themes',false);
+ document.getElementById('play').onclick=startGame;document.getElementById('shop').onclick=()=>shop('themes',false);document.getElementById('leaderboard').onclick=leaderboard;
+}
+
+
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]))}
+const LB_CFG=window.NPA_LEADERBOARD||{};
+const GLOBAL_ON=!!(LB_CFG.url&&LB_CFG.publishableKey&&!LB_CFG.url.includes('YOUR_'));
+function globalHeaders(extra={}){return {'apikey':LB_CFG.publishableKey||'','Authorization':`Bearer ${LB_CFG.publishableKey||''}`,'Content-Type':'application/json',...extra}}
+function addLocalLeaderboard(mode,detail,reward,rankScore){
+ save.leaderboard.push({name:save.playerName,mode,detail,reward,rankScore,time:Date.now()});
+ save.leaderboard=save.leaderboard.sort((a,b)=>(b.rankScore||0)-(a.rankScore||0)||(b.time||0)-(a.time||0)).slice(0,30);persist();
+}
+async function submitGlobalScore(mode,detail,reward,rankScore){
+ addLocalLeaderboard(mode,detail,reward,rankScore);
+ if(!GLOBAL_ON)return false;
+ try{
+   const body={player_name:save.playerName.slice(0,16),mode:String(mode).slice(0,24),detail:String(detail).slice(0,32),reward:Math.max(0,Math.round(reward)),score:Math.max(0,Math.round(rankScore)),client_version:'1.07'};
+   const r=await fetch(`${LB_CFG.url}/rest/v1/neon_ping_scores`,{method:'POST',headers:globalHeaders({'Prefer':'return=minimal'}),body:JSON.stringify(body)});
+   if(!r.ok)throw new Error(`HTTP ${r.status}`);
+   uiToast('GLOBAL SCORE SUBMITTED');return true;
+ }catch(e){console.warn('Global score submit failed',e);uiToast('SAVED LOCALLY — ONLINE SYNC FAILED');return false}
+}
+async function fetchGlobalScores(){
+ if(!GLOBAL_ON)return [...save.leaderboard].sort((a,b)=>(b.rankScore||0)-(a.rankScore||0)).slice(0,20).map(x=>({player_name:x.name,mode:x.mode,detail:x.detail,reward:x.reward,score:x.rankScore}));
+ const u=`${LB_CFG.url}/rest/v1/neon_ping_scores?select=player_name,mode,detail,reward,score,created_at&order=score.desc,created_at.asc&limit=20`;
+ const r=await fetch(u,{headers:globalHeaders()});
+ if(!r.ok)throw new Error(`HTTP ${r.status}`);
+ return await r.json();
+}
+async function leaderboard(){
+ center.style.display='grid';showPause(false);
+ panel.innerHTML=`<div class="brandKicker">NEON PING ARENA <span>GLOBAL</span></div><h1><span>LEADERBOARD</span></h1>
+ <div class="leaderTop"><div><b>${escapeHtml(save.playerName)}</b><small>Player profile</small></div><div class="globalStatus ${GLOBAL_ON?'online':'offline'}">${GLOBAL_ON?'● GLOBAL ONLINE':'● LOCAL FALLBACK'}</div></div>
+ <div id="leaderRows"><div class="loadingRing"></div></div>
+ <div class="row"><button class="secondary" id="setName">PLAYER NAME</button><button id="leaderBack">BACK</button></div>`;
+ document.getElementById('setName').onclick=()=>{let n=prompt('Choose a leaderboard name (max 16 characters):',save.playerName);if(n!==null){n=n.replace(/[^A-Za-z0-9 _-]/g,'').trim().slice(0,16);if(n){save.playerName=n;persist();leaderboard()}}};
+ document.getElementById('leaderBack').onclick=mainMenu;
+ try{
+   const rows=await fetchGlobalScores(),box=document.getElementById('leaderRows');
+   box.innerHTML=`<div class="leaderList">${rows.length?rows.map((r,i)=>`<div class="leaderRow ${i===0?'top1':i===1?'top2':i===2?'top3':''}"><div class="leaderRank">${i+1}</div><div><div class="leaderName">${escapeHtml(r.player_name||'PLAYER')}</div><div class="leaderMeta">${escapeHtml(r.mode||'MATCH')} · ${escapeHtml(r.detail||'')}</div></div><div class="leaderScoreBlock"><b>${Number(r.score||0)} PTS</b><small>+${Number(r.reward||0)} coins</small></div></div>`).join(''):`<div class="sub">No ranked victories yet.</div>`}</div>`;
+ }catch(e){
+   document.getElementById('leaderRows').innerHTML=`<div class="sub">Global rankings are temporarily unavailable. Your wins still save locally and can sync after the backend is available.</div>`;
+ }
 }
 
 function shop(tab='themes',fromPause=false){
@@ -162,18 +281,18 @@ function shop(tab='themes',fromPause=false){
  <div class="tabs"><button id="themesTab" class="${tab==='themes'?'':'secondary'}">THEMES</button><button id="ballsTab" class="${tab==='balls'?'':'secondary'}">BALLS</button></div>
  <div class="cardGrid">
  ${tab==='themes'?Object.entries(THEMES).map(([k,v])=>{let owned=save.ownedThemes.includes(k),active=save.theme===k;return `<div class="card ${active?'selected':''}" style="--accent:${v.arena}"><b>${v.name}</b><div class="preview" style="--accent:${v.arena}"><img class="bg" src="${v.img}"><div class="arena"></div><div class="mid"></div></div><div class="reward">${active?'EQUIPPED':owned?'OWNED':`<img src="coin.png">${v.price}`}</div><button data-buytheme="${k}" class="${owned?'secondary':''}" ${active?'disabled':''}>${active?'ACTIVE':owned?'EQUIP':'BUY'}</button></div>`}).join(''):
- Object.entries(BALLS).map(([k,v])=>{let owned=save.ownedBalls.includes(k),active=save.ball===k;return `<div class="card ${active?'selected':''}"><b>${v.name}</b><div class="ballPreview"><img src="${v.img}"></div><div class="reward">${active?'EQUIPPED':owned?'OWNED':`<img src="coin.png">${v.price}`}</div><button data-buyball="${k}" class="${owned?'secondary':''}" ${active?'disabled':''}>${active?'ACTIVE':owned?'EQUIP':'BUY'}</button></div>`}).join('')}
+ Object.entries(BALLS).map(([k,v])=>{let owned=save.ownedBalls.includes(k),active=save.ball===k;return `<div class="card ${active?'selected':''}"><b>${v.name}</b><div class="ballPreview"><div class="ballFx fx-${k}"><img src="${v.img}"></div></div><div class="reward">${active?'EQUIPPED':owned?'OWNED':`<img src="coin.png">${v.price}`}</div><button data-buyball="${k}" class="${owned?'secondary':''}" ${active?'disabled':''}>${active?'ACTIVE':owned?'EQUIP':'BUY'}</button></div>`}).join('')}
  </div><div class="row"><button class="secondary" id="back">${fromPause?'BACK TO PAUSE':'BACK'}</button></div>`;
  document.getElementById('themesTab').onclick=()=>shop('themes',fromPause);document.getElementById('ballsTab').onclick=()=>shop('balls',fromPause);
  document.getElementById('back').onclick=()=>fromPause?pauseMenu():mainMenu();
- document.querySelectorAll('[data-buytheme]').forEach(b=>b.onclick=()=>{let k=b.dataset.buytheme,v=THEMES[k];if(!save.ownedThemes.includes(k)){if(save.coins<v.price){showMessage('NOT ENOUGH COINS','#ff6070');return}save.coins-=v.price;save.ownedThemes.push(k)}save.theme=k;persist();shop('themes',fromPause)});
- document.querySelectorAll('[data-buyball]').forEach(b=>b.onclick=()=>{let k=b.dataset.buyball,v=BALLS[k];if(!save.ownedBalls.includes(k)){if(save.coins<v.price){showMessage('NOT ENOUGH COINS','#ff6070');return}save.coins-=v.price;save.ownedBalls.push(k)}save.ball=k;persist();shop('balls',fromPause)});
+ document.querySelectorAll('[data-buytheme]').forEach(b=>b.onclick=()=>{let k=b.dataset.buytheme,v=THEMES[k];if(!save.ownedThemes.includes(k)){if(save.coins<v.price){showMessage('NOT ENOUGH COINS','#ff6070');return}save.coins-=v.price;save.ownedThemes.push(k);sBuy()}save.theme=k;persist();shop('themes',fromPause)});
+ document.querySelectorAll('[data-buyball]').forEach(b=>b.onclick=()=>{let k=b.dataset.buyball,v=BALLS[k];if(!save.ownedBalls.includes(k)){if(save.coins<v.price){showMessage('NOT ENOUGH COINS','#ff6070');return}save.coins-=v.price;save.ownedBalls.push(k);sBuy()}save.ball=k;persist();shop('balls',fromPause)});
 }
 
 function startGame(){
  audio();state.playing=true;state.paused=false;state.pointLocked=false;state.pScore=0;state.aScore=0;state.rally=0;center.style.display='none';showPause(true);
  player.y=H/2;player.targetY=H/2;cpu.y=H/2;
- if(save.gameMode==='boss'){state.bossHP=state.bossMax=20;state.bossX=W*.82;state.bossY=H/2;state.bossDir=1;state.bossExploding=false;state.bossElapsed=0;bossHud.classList.add('show');updateBossHud()}else bossHud.classList.remove('show');
+ if(save.gameMode==='boss'){state.bossHP=state.bossMax=25;state.bossX=W*.82;state.bossY=H/2;state.bossDir=1;state.bossExploding=false;state.bossElapsed=0;bossHud.classList.add('show');updateBossHud()}else bossHud.classList.remove('show');
  refreshHud();ball.vx=ball.vy=0;ball.x=W/2;ball.y=H/2;showMessage('READY');
  setTimeout(()=>{if(state.playing&&!state.paused){showMessage('GO!','#63ffe8');resetBall(1)}},600);
 }
@@ -202,14 +321,24 @@ function classicPoint(playerWon){
  if(playerWon)state.pScore++;else state.aScore++;refreshHud();sScore(playerWon);showMessage(playerWon?'POINT!':'CPU SCORES',playerWon?'#63ffe8':'#ff6575');
  if(state.pScore>=5||state.aScore>=5){setTimeout(()=>endClassic(state.pScore>state.aScore),600)}else setTimeout(()=>{if(state.playing&&!state.paused)resetBall(playerWon?-1:1)},550);
 }
+
+function confettiHtml(){
+ const colors=['#65fff0','#ffd75c','#a76dff','#ff6674'];
+ return `<div class="confetti">${Array.from({length:28},(_,i)=>`<i style="left:${(i*37)%100}%;--delay:${(i%7)*-.16}s;--dur:${1.9+(i%6)*.17}s;background:${colors[i%4]}"></i>`).join('')}</div>`;
+}
+
 function endClassic(win){
- state.playing=false;showPause(false);let reward=0;if(win){reward=DIFF[save.difficulty].reward;save.coins+=reward;persist()}
- center.style.display='grid';panel.innerHTML=`<h1>${win?'YOU <span>WIN!</span>':'<span>CPU</span> WINS'}</h1><div class="sub">Final score: <b>${state.pScore} - ${state.aScore}</b>${win?`<br>Match reward: <b>${reward} coins</b>.`:''}</div><div class="coinBig"><img src="coin.png">${save.coins}</div><div class="row"><button id="again">PLAY AGAIN</button><button class="secondary" id="back">MODES</button></div>`;document.getElementById('again').onclick=startGame;document.getElementById('back').onclick=mainMenu
+ state.playing=false;showPause(false);let reward=0;if(win){reward=DIFF[save.difficulty].reward;save.coins+=reward;submitGlobalScore(DIFF[save.difficulty].name,`${state.pScore}-${state.aScore}`,reward,{easy:100,normal:220,hard:400,impossible:700}[save.difficulty]+(state.pScore-state.aScore)*10);persist()}
+ center.style.display='grid';if(win){sVictory();setTimeout(sReward,250)} panel.innerHTML=`<div class="resultScreen">${win?confettiHtml():''}<div class="resultEmblem">${win?'★':'×'}</div><div class="resultTitle ${win?'win':'lose'}">${win?'VICTORY':'DEFEAT'}</div><div class="sub">${win?'ARENA CLEARED':'THE ARENA WINS THIS ROUND'}</div><div class="resultStats">FINAL SCORE &nbsp; ${state.pScore} — ${state.aScore} &nbsp; • &nbsp; ${DIFF[save.difficulty].name}</div>${win?`<div class="rewardReveal"><div class="rewardAmount"><img src="coin.png">+${reward} COINS</div><div class="sub" style="margin:6px 0 0">${save.coins} total balance</div></div>`:''}<div class="row"><button id="again">${win?'PLAY AGAIN':'RETRY'}</button><button class="secondary" id="back">ARENA MENU</button></div></div>`;document.getElementById('again').onclick=startGame;document.getElementById('back').onclick=mainMenu
 }
 
 function updateBossHud(){let done=state.bossMax-state.bossHP;bossHits.textContent=`${done} / ${state.bossMax} HITS`;bossHealth.style.width=`${Math.max(0,state.bossHP/state.bossMax*100)}%`}
 function bossHit(){
- state.bossHP--;updateBossHud();state.shake=15;burst(state.bossX,state.bossY,'#ff5b37',38,430);showMessage(`${state.bossMax-state.bossHP}/${state.bossMax}`,'#ff7654');sHit();
+ state.bossHP--;updateBossHud();state.shake=15;burst(state.bossX,state.bossY,'#ff5b37',38,430);
+ let damageHits=state.bossMax-state.bossHP;
+ if(damageHits%5===0 && state.bossHP>0){burst(state.bossX,state.bossY,'#ffffff',55,520);showMessage(`DAMAGE ${damageHits}/${state.bossMax}!`,'#ff7654');state.shake=22;sBossDamage()}
+ else showMessage(`${damageHits}/${state.bossMax}`,'#ff7654');
+ sHit();
  if(state.bossHP<=0){bossWin();return}
  // The boss always catches the incoming ball. Returns become faster and nastier over time.
  let hits=state.bossMax-state.bossHP;
@@ -227,8 +356,8 @@ function bossHit(){
 }
 function bossWin(){
  state.bossExploding=true;ball.vx=ball.vy=0;state.playing=false;showPause(false);
- burst(state.bossX,state.bossY,'#ff431f',150,760);burst(state.bossX,state.bossY,'#ffffff',90,620);state.shake=30;save.coins+=50;persist();bossHud.classList.remove('show');showMessage('BOSS DOWN!','#ffb05f');
- setTimeout(()=>{center.style.display='grid';panel.innerHTML=`<h1>BOSS <span>DESTROYED</span></h1><div class="sub">You landed all ${state.bossMax} hits before the skull reached you.</div><div class="coinBig"><img src="coin.png">+50 &nbsp; • &nbsp; ${save.coins} TOTAL</div><div class="row"><button id="again">FIGHT AGAIN</button><button class="secondary" id="back">MODES</button></div>`;document.getElementById('again').onclick=startGame;document.getElementById('back').onclick=mainMenu},850)
+ burst(state.bossX,state.bossY,'#ff431f',150,760);burst(state.bossX,state.bossY,'#ffffff',90,620);state.shake=30;save.coins+=50;submitGlobalScore('BOSS MODE',`${state.bossMax} hits`,50,600+Math.max(0,120-Math.round(state.bossElapsed*2)));persist();bossHud.classList.remove('show');showMessage('BOSS DOWN!','#ffb05f');
+ sVictory();setTimeout(sReward,260);setTimeout(()=>{center.style.display='grid';panel.innerHTML=`<div class="resultScreen">${confettiHtml()}<div class="resultEmblem">☠</div><div class="resultTitle win">BOSS DESTROYED</div><div class="sub">25 direct hits. The arena is yours.</div><div class="rewardReveal"><div class="rewardAmount"><img src="coin.png">+50 COINS</div><div class="sub" style="margin:6px 0 0">${save.coins} total balance</div></div><div class="row"><button id="again">FIGHT AGAIN</button><button class="secondary" id="back">ARENA MENU</button></div></div>`;document.getElementById('again').onclick=startGame;document.getElementById('back').onclick=mainMenu},850)
 }
 function bossLose(reason){
  if(state.pointLocked||!state.playing)return;state.pointLocked=true;state.playing=false;ball.vx=ball.vy=0;showPause(false);bossHud.classList.remove('show');sScore(false);showMessage('GAME OVER','#ff493f');
@@ -293,7 +422,7 @@ function draw(){
  function paddle(p){rr(p.x-p.w/2,p.y-p.h/2,p.w,p.h,8);ctx.fillStyle='#fff';ctx.shadowColor=th.arena;ctx.shadowBlur=18;ctx.fill();ctx.shadowBlur=0;ctx.strokeStyle=th.arena;ctx.lineWidth=4;ctx.stroke()}
  paddle(player);if(save.gameMode==='classic')paddle(cpu);
  let bi=imgs[b.img];if(bi&&bi.complete)ctx.drawImage(bi,ball.x-ball.r*1.55,ball.y-ball.r*1.55,ball.r*3.1,ball.r*3.1);else{ctx.fillStyle='#dfff3f';ctx.beginPath();ctx.arc(ball.x,ball.y,ball.r,0,Math.PI*2);ctx.fill()}
- if(save.gameMode==='boss'&&!state.bossExploding){let boss=imgs['boss-skull.png'],bw=Math.min(H*.34,210);if(boss&&boss.complete){ctx.shadowColor='#ff3f20';ctx.shadowBlur=25;ctx.drawImage(boss,state.bossX-bw*.5,state.bossY-bw*.5,bw,bw);ctx.shadowBlur=0}}
+ if(save.gameMode==='boss'&&!state.bossExploding){let bossStage=Math.min(4,Math.floor((state.bossMax-state.bossHP)/5)),boss=imgs[`boss-skull-${bossStage}.png`]||imgs['boss-skull.png'],bw=Math.min(H*.34,210);if(boss&&boss.complete){ctx.shadowColor='#ff3f20';ctx.shadowBlur=25;ctx.drawImage(boss,state.bossX-bw*.5,state.bossY-bw*.5,bw,bw);ctx.shadowBlur=0}}
  particles.forEach(p=>{ctx.globalAlpha=Math.max(0,p.life/p.max);ctx.fillStyle=p.c;ctx.fillRect(p.x,p.y,p.size,p.size)});ctx.globalAlpha=1;ctx.restore()
 }
 function loop(now){let dt=Math.min(.024,(now-last)/1000);last=now;update(dt);draw();requestAnimationFrame(loop)}requestAnimationFrame(loop);
