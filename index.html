@@ -141,7 +141,6 @@ button.secondary{background:linear-gradient(180deg,rgba(23,34,56,.92),rgba(9,16,
 <div id="center"><div id="panel" class="panel"></div></div>
 <div id="rotateNote"><div><div style="font-size:48px">↻</div><h2>Rotate your phone</h2><div class="sub">Landscape mode is required for the arena.</div></div></div>
 </div><div id="toast" class="toast"></div>
-<script src="leaderboard-config.js"></script>
 <script>
 (()=>{
 const canvas=document.getElementById('game'),ctx=canvas.getContext('2d'),wrap=document.getElementById('wrap'),center=document.getElementById('center'),panel=document.getElementById('panel');
@@ -220,7 +219,7 @@ function showPause(show){pauseBtn.classList.toggle('show',show)}
 
 function mainMenu(){
  state.playing=false;state.paused=false;center.style.display='grid';showPause(false);bossHud.classList.remove('show');refreshHud();
- panel.innerHTML=`<div class="brandKicker">NEON PING ARENA <span>v1.07</span></div><h1>NEON <span>PING</span></h1><div class="sub">Enter the arena. Master the AI, defeat the boss, climb the global rankings, and build your collection.</div>
+ panel.innerHTML=`<div class="brandKicker">NEON PING ARENA <span>v1.07.1</span></div><h1>NEON <span>PING</span></h1><div class="sub">Enter the arena. Master the AI, defeat the boss, climb the global rankings, and build your collection.</div>
  <div class="coinBig"><img src="coin.png">${save.coins}</div>
  <div class="modePick">
    <div class="card ${save.gameMode==='classic'?'selected':''}" data-gamemode="classic" style="--accent:#63ffe8"><b>CLASSIC</b><div class="sub" style="margin:6px 0 0">First to 5 points against the AI.</div></div>
@@ -235,7 +234,10 @@ function mainMenu(){
 
 
 function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]))}
-const LB_CFG=window.NPA_LEADERBOARD||{};
+const LB_CFG={
+ url:"https://exyyzruaxlontnwewpwm.supabase.co",
+ publishableKey:"sb_publishable_IbP6a09GfrV06Pf-b3Hapg_lM9TrJJb"
+};
 const GLOBAL_ON=!!(LB_CFG.url&&LB_CFG.publishableKey&&!LB_CFG.url.includes('YOUR_'));
 function globalHeaders(extra={}){return {'apikey':LB_CFG.publishableKey||'','Authorization':`Bearer ${LB_CFG.publishableKey||''}`,'Content-Type':'application/json',...extra}}
 function addLocalLeaderboard(mode,detail,reward,rankScore){

@@ -1,7 +1,7 @@
 {
   "name": "Neon Ping Arena",
   "short_name": "Ping Arena",
-  "description": "Neon Ping Arena v1.07 \u2014 arcade ping pong, boss battles, unlockable arenas, ball skins and global rankings.",
+  "description": "Neon Ping Arena v1.07.1 \u2014 arcade ping pong, boss battles, unlockable arenas, ball skins and global rankings.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",

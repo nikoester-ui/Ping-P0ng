@@ -1,5 +1,2 @@
-// Neon Ping Arena global leaderboard configuration.
-window.NPA_LEADERBOARD = {
-  url: "https://exyyzruaxlontnwewpwm.supabase.co",
-  publishableKey: "sb_publishable_IbP6a09GfrV06Pf-b3Hapg_lM9TrJJb"
-};
+// Neon Ping Arena v1.07.1
+// Configuration is now embedded in index.html to prevent stale PWA config caching.
