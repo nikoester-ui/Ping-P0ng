@@ -77,6 +77,12 @@ button:active,.card:active{transform:scale(.98)}
 @keyframes ballFloat{0%,100%{transform:translateY(-3px)}50%{transform:translateY(4px)}}@keyframes ballSpin{to{rotate:360deg}}
 @keyframes firePulse{from{scale:.86;opacity:.65}to{scale:1.17;opacity:1}}@keyframes flameDance{from{transform:translate(-50%,-50%) skewX(-8deg) scaleY(.9)}to{transform:translate(-50%,-56%) skewX(9deg) scaleY(1.24)}}
 @keyframes ringSpin{to{transform:translate(-50%,-50%) rotate(360deg)}}@keyframes sparkOrbit{to{transform:translate(-50%,-50%) rotate(360deg)}}
+
+.fx-plasma .plasmaAnim{position:relative;width:74px;height:74px}
+.fx-plasma .plasmaAnim img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;opacity:0;animation:plasmaFrame 0.48s steps(1,end) infinite}
+.fx-plasma .plasmaAnim img:nth-child(1){animation-delay:0s}.fx-plasma .plasmaAnim img:nth-child(2){animation-delay:-.12s}.fx-plasma .plasmaAnim img:nth-child(3){animation-delay:-.24s}.fx-plasma .plasmaAnim img:nth-child(4){animation-delay:-.36s}
+@keyframes plasmaFrame{0%,24.9%{opacity:1}25%,100%{opacity:0}}
+
 @keyframes orbitDot{0%{transform:translate(-50%,-50%) translateX(43px)}100%{transform:translate(-50%,-50%) rotate(360deg) translateX(43px)}}@keyframes plasmaPulse{from{scale:.86;opacity:.65}to{scale:1.12;opacity:1}}
 
 
@@ -115,6 +121,13 @@ button.secondary{background:linear-gradient(180deg,rgba(23,34,56,.92),rgba(9,16,
 .leaderRow.top2{border-color:rgba(205,230,255,.25)}.leaderRow.top3{border-color:rgba(224,151,93,.25)}
 .leaderScoreBlock{text-align:right}.leaderScoreBlock b{color:#8ffff3}.leaderScoreBlock small{display:block;color:rgba(220,240,255,.46);font-size:10px;margin-top:2px}
 .loadingRing{width:26px;height:26px;border-radius:50%;margin:28px auto;border:3px solid rgba(255,255,255,.1);border-top-color:#72efff;animation:spin .75s linear infinite}
+
+.profileEditor{display:grid;grid-template-columns:1.2fr .8fr auto;gap:8px;margin:12px 0 14px}
+.profileEditor input,.profileEditor select{min-width:0;border:1px solid rgba(155,215,255,.22);background:rgba(5,12,23,.75);color:#fff;border-radius:12px;padding:10px 11px;font:800 12px/1.2 inherit;outline:none}
+.profileEditor input:focus,.profileEditor select:focus{border-color:#63ffe8;box-shadow:0 0 0 2px rgba(99,255,232,.12)}
+.flag{font-size:20px;filter:drop-shadow(0 1px 2px #0008);margin-right:7px}
+.profileHint{font-size:11px;color:rgba(220,240,255,.56);margin-top:4px}
+
 .toast{position:absolute;left:50%;bottom:24px;z-index:30;transform:translate(-50%,18px);opacity:0;padding:10px 14px;border-radius:12px;background:rgba(5,12,23,.94);border:1px solid rgba(145,220,255,.2);font-size:12px;font-weight:850;color:#e7f9ff;pointer-events:none;transition:.22s}
 .toast.show{opacity:1;transform:translate(-50%,0)}
 @keyframes rewardPop{0%{transform:scale(.3) rotate(-14deg);opacity:0}70%{transform:scale(1.12) rotate(4deg)}100%{transform:scale(1);opacity:1}}
@@ -135,7 +148,7 @@ button.secondary{background:linear-gradient(180deg,rgba(23,34,56,.92),rgba(9,16,
    <div class="hudSide right"><div class="hudPill coinPill"><img src="coin.png"><span class="coinNum" id="coinHud">0</span></div></div>
  </div>
  <button id="pauseBtn"><span class="pauseBars"><i></i><i></i></span></button>
- <div id="bossHud"><div class="bossText"><span>BOSS HEALTH</span><span id="bossHits">0 / 25 HITS</span></div><div class="healthOuter"><div class="healthInner" id="bossHealth"></div></div></div>
+ <div id="bossHud"><div class="bossText"><span>BOSS HEALTH</span><span id="bossHits">0 / 15 HITS</span></div><div class="healthOuter"><div class="healthInner" id="bossHealth"></div></div></div>
  <div id="message">GO!</div>
 </div>
 <div id="center"><div id="panel" class="panel"></div></div>
@@ -148,10 +161,10 @@ const scoreText=document.getElementById('scoreText'),scoreSub=document.getElemen
 let W=1280,H=720,DPR=1,last=performance.now(),particles=[],rings=[],trail=[];
 
 const DIFF={
- easy:{name:'EASY',reward:15,cpu:315,error:105,predict:.48,ramp:27,accent:'#65ff87',icon:'skull-easy.png',desc:'A relaxed match for new players.'},
- normal:{name:'NORMAL',reward:30,cpu:430,error:63,predict:.69,ramp:38,accent:'#68a8ff',icon:'skull-normal.png',desc:'Balanced speed and prediction.'},
- hard:{name:'HARD',reward:50,cpu:570,error:30,predict:.88,ramp:48,accent:'#ff6666',icon:'skull-hard.png',desc:'Fast reactions and sharp angles.'},
- impossible:{name:'IMPOSSIBLE',reward:80,cpu:790,error:8,predict:1,ramp:58,accent:'#c971ff',icon:'skull-impossible.png',desc:'Near-perfect reactions. Survive if you can.'}
+ easy:{name:'EASY',reward:15,cpu:230,error:42,predict:.58,reaction:.22,ramp:15,maxBall:820,accent:'#65ff87',icon:'skull-easy.png',desc:'Slow tracking and gentle rallies for new players.'},
+ normal:{name:'NORMAL',reward:30,cpu:300,error:28,predict:.72,reaction:.16,ramp:19,maxBall:900,accent:'#68a8ff',icon:'skull-normal.png',desc:'Friendly but responsive. A fair everyday challenge.'},
+ hard:{name:'HARD',reward:50,cpu:385,error:17,predict:.84,reaction:.11,ramp:23,maxBall:980,accent:'#ff6666',icon:'skull-hard.png',desc:'Fast enough to push you without feeling unfair.'},
+ impossible:{name:'IMPOSSIBLE',reward:80,cpu:465,error:9,predict:.93,reaction:.075,ramp:27,maxBall:1060,accent:'#c971ff',icon:'skull-impossible.png',desc:'The toughest kid-friendly mode: demanding, but beatable.'}
 };
 const THEMES={
  space:{name:'Nebula Arena',price:0,img:'theme-space.png',arena:'#68ddff'},
@@ -168,9 +181,9 @@ const BALLS={
  plasma:{name:'Plasma Orb',price:300,img:'ball-plasma.png'}
 };
 const imgs={};
-[...Object.values(THEMES).map(x=>x.img),...Object.values(BALLS).map(x=>x.img),'boss-skull.png','boss-skull-0.png','boss-skull-1.png','boss-skull-2.png','boss-skull-3.png','boss-skull-4.png'].forEach(src=>{const i=new Image();i.src=src;imgs[src]=i});
+[...Object.values(THEMES).map(x=>x.img),...Object.values(BALLS).map(x=>x.img),'ball-plasma-0.png','ball-plasma-1.png','ball-plasma-2.png','ball-plasma-3.png','boss-skull.png','boss-skull-0.png','boss-skull-1.png','boss-skull-2.png','boss-skull-3.png','boss-skull-4.png'].forEach(src=>{const i=new Image();i.src=src;imgs[src]=i});
 
-const defaults={coins:0,difficulty:'normal',gameMode:'classic',theme:'space',ball:'classic',ownedThemes:['space'],ownedBalls:['classic'],playerName:'PLAYER',leaderboard:[]};
+const defaults={coins:0,difficulty:'normal',gameMode:'classic',theme:'space',ball:'classic',ownedThemes:['space'],ownedBalls:['classic'],playerName:'',countryCode:'',leaderboard:[],pendingScores:[]};
 let raw={};try{raw=JSON.parse(localStorage.getItem('neonPingSave')||'{}')||{}}catch(e){}
 let save={...defaults,...raw};
 // migration from older builds
@@ -187,13 +200,22 @@ if(!THEMES[save.theme])save.theme='space';
 if(!BALLS[save.ball])save.ball='classic';
 if(!DIFF[save.difficulty])save.difficulty='normal';
 if(!['classic','boss'].includes(save.gameMode))save.gameMode='classic';
-if(typeof save.playerName!=='string'||!save.playerName.trim())save.playerName='PLAYER';
+if(typeof save.playerName!=='string')save.playerName='';
+if(save.playerName.trim().toUpperCase()==='PLAYER')save.playerName='';
+if(typeof save.countryCode!=='string')save.countryCode='';
+if(!save.countryCode){
+  try{
+    const parts=(navigator.language||'').split('-');
+    if(parts[1]&&parts[1].length===2)save.countryCode=parts[1].toUpperCase();
+  }catch(e){}
+}
 if(!Array.isArray(save.leaderboard))save.leaderboard=[];
+if(!Array.isArray(save.pendingScores))save.pendingScores=[];
 
 function persist(){localStorage.setItem('neonPingSave',JSON.stringify(save));coinHud.textContent=save.coins}
 persist();
 
-const state={playing:false,paused:false,pointLocked:false,pScore:0,aScore:0,time:0,shake:0,rally:0,bossHP:25,bossMax:25,bossX:0,bossY:0,bossDir:1,bossExploding:false,bossElapsed:0};
+const state={playing:false,paused:false,pointLocked:false,pScore:0,aScore:0,time:0,shake:0,rally:0,bossHP:15,bossMax:15,bossX:0,bossY:0,bossDir:1,bossExploding:false,bossElapsed:0,cpuThink:0,cpuTarget:0};
 const player={x:36,y:H/2,w:18,h:120,vy:0,targetY:H/2},cpu={x:W-36,y:H/2,w:18,h:120,vy:0},ball={x:W/2,y:H/2,r:13,vx:0,vy:0,speed:590};
 const keys=new Set();
 function resize(){const r=wrap.getBoundingClientRect();DPR=Math.min(2,window.devicePixelRatio||1);canvas.width=Math.round(r.width*DPR);canvas.height=Math.round(r.height*DPR);W=r.width;H=r.height;ctx.setTransform(DPR,0,0,DPR,0,0);state.bossX=state.bossX||W*.78}addEventListener('resize',resize);resize();
@@ -219,11 +241,11 @@ function showPause(show){pauseBtn.classList.toggle('show',show)}
 
 function mainMenu(){
  state.playing=false;state.paused=false;center.style.display='grid';showPause(false);bossHud.classList.remove('show');refreshHud();
- panel.innerHTML=`<div class="brandKicker">NEON PING ARENA <span>v1.07.1</span></div><h1>NEON <span>PING</span></h1><div class="sub">Enter the arena. Master the AI, defeat the boss, climb the global rankings, and build your collection.</div>
+ panel.innerHTML=`<div class="brandKicker">NEON PING ARENA <span>v1.08</span></div><h1>NEON <span>PING</span></h1><div class="sub">Enter the arena. Master the AI, defeat the boss, climb the global rankings, and build your collection.</div>
  <div class="coinBig"><img src="coin.png">${save.coins}</div>
  <div class="modePick">
    <div class="card ${save.gameMode==='classic'?'selected':''}" data-gamemode="classic" style="--accent:#63ffe8"><b>CLASSIC</b><div class="sub" style="margin:6px 0 0">First to 5 points against the AI.</div></div>
-   <div class="card bossCard ${save.gameMode==='boss'?'selected':''}" data-gamemode="boss"><img class="diffIcon" src="boss-skull.png"><b>BOSS MODE</b><div class="sub" style="margin:6px 0 0">25 hits. The skull visibly breaks every 5 hits and keeps closing in. Reward: 50 coins.</div></div>
+   <div class="card bossCard ${save.gameMode==='boss'?'selected':''}" data-gamemode="boss"><img class="diffIcon" src="boss-skull.png"><b>BOSS MODE</b><div class="sub" style="margin:6px 0 0">15 hits. The skull visibly breaks every 3 hits and advances at a fairer pace. Reward: 50 coins.</div></div>
  </div>
  ${save.gameMode==='classic'?`<div class="cardGrid">${Object.entries(DIFF).map(([k,v])=>`<div class="card ${k} ${save.difficulty===k?'selected':''}" data-diff="${k}"><div class="cardTitle"><img class="diffIcon" src="${v.icon}"><span>${v.name}</span></div><div class="sub" style="margin:8px 0 0">${v.desc}</div><div class="reward"><img src="coin.png">${v.reward} COINS PER MATCH WIN</div></div>`).join('')}</div>`:''}
  <div class="row"><button id="play">PLAY</button><button class="secondary" id="shop"><span style="display:flex;gap:8px;align-items:center"><img src="shop-white.png" style="width:18px">SHOP</span></button><button class="secondary" id="leaderboard">LEADERBOARD</button></div>`;
@@ -239,41 +261,127 @@ const LB_CFG={
  publishableKey:"sb_publishable_IbP6a09GfrV06Pf-b3Hapg_lM9TrJJb"
 };
 const GLOBAL_ON=!!(LB_CFG.url&&LB_CFG.publishableKey&&!LB_CFG.url.includes('YOUR_'));
+const COUNTRIES=[
+ ['CH','Switzerland'],['DE','Germany'],['AT','Austria'],['FR','France'],['IT','Italy'],['GB','United Kingdom'],['US','United States'],
+ ['CA','Canada'],['AU','Australia'],['NZ','New Zealand'],['ES','Spain'],['PT','Portugal'],['NL','Netherlands'],['BE','Belgium'],
+ ['SE','Sweden'],['NO','Norway'],['DK','Denmark'],['FI','Finland'],['PL','Poland'],['CZ','Czechia'],['SK','Slovakia'],['HU','Hungary'],
+ ['RO','Romania'],['GR','Greece'],['TR','Türkiye'],['UA','Ukraine'],['JP','Japan'],['KR','South Korea'],['CN','China'],['IN','India'],
+ ['BR','Brazil'],['MX','Mexico'],['AR','Argentina'],['ZA','South Africa'],['XX','Other']
+];
+function flagEmoji(code){
+ code=String(code||'XX').toUpperCase();
+ if(!/^[A-Z]{2}$/.test(code)||code==='XX')return '🌐';
+ return String.fromCodePoint(...[...code].map(c=>127397+c.charCodeAt()));
+}
+function packDetail(detail,country=save.countryCode){return `${String(country||'XX').toUpperCase()}|${String(detail||'').slice(0,29)}`.slice(0,32)}
+function unpackDetail(raw){
+ raw=String(raw||'');
+ const m=raw.match(/^([A-Z]{2})\|(.*)$/);
+ return m?{country:m[1],detail:m[2]}:{country:'XX',detail:raw};
+}
 function globalHeaders(extra={}){return {'apikey':LB_CFG.publishableKey||'','Authorization':`Bearer ${LB_CFG.publishableKey||''}`,'Content-Type':'application/json',...extra}}
-function addLocalLeaderboard(mode,detail,reward,rankScore){
- save.leaderboard.push({name:save.playerName,mode,detail,reward,rankScore,time:Date.now()});
+function hasLeaderboardProfile(){return !!(save.playerName&&save.playerName.trim())}
+function addLocalLeaderboard(mode,detail,reward,rankScore,country=save.countryCode){
+ if(!hasLeaderboardProfile())return;
+ save.leaderboard.push({name:save.playerName,country:country||'XX',mode,detail,reward,rankScore,time:Date.now()});
  save.leaderboard=save.leaderboard.sort((a,b)=>(b.rankScore||0)-(a.rankScore||0)||(b.time||0)-(a.time||0)).slice(0,30);persist();
 }
-async function submitGlobalScore(mode,detail,reward,rankScore){
- addLocalLeaderboard(mode,detail,reward,rankScore);
- if(!GLOBAL_ON)return false;
+async function postGlobalPayload(payload){
+ const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),6500);
  try{
-   const body={player_name:save.playerName.slice(0,16),mode:String(mode).slice(0,24),detail:String(detail).slice(0,32),reward:Math.max(0,Math.round(reward)),score:Math.max(0,Math.round(rankScore)),client_version:'1.07'};
-   const r=await fetch(`${LB_CFG.url}/rest/v1/neon_ping_scores`,{method:'POST',headers:globalHeaders({'Prefer':'return=minimal'}),body:JSON.stringify(body)});
-   if(!r.ok)throw new Error(`HTTP ${r.status}`);
+  const r=await fetch(`${LB_CFG.url}/rest/v1/neon_ping_scores`,{
+    method:'POST',headers:globalHeaders({'Prefer':'return=minimal'}),body:JSON.stringify(payload),signal:controller.signal
+  });
+  if(!r.ok)throw new Error(`HTTP ${r.status}`);
+  return true;
+ }finally{clearTimeout(timer)}
+}
+async function flushPendingScores(){
+ if(!GLOBAL_ON||!save.pendingScores.length)return;
+ const remaining=[];
+ for(const payload of save.pendingScores.slice(0,10)){
+   try{await postGlobalPayload(payload)}catch(e){remaining.push(payload)}
+ }
+ save.pendingScores=[...remaining,...save.pendingScores.slice(10)].slice(0,30);persist();
+}
+async function submitGlobalScore(mode,detail,reward,rankScore){
+ if(!hasLeaderboardProfile()){uiToast('SET A PLAYER NAME TO JOIN THE LEADERBOARD');return false}
+ addLocalLeaderboard(mode,detail,reward,rankScore,save.countryCode);
+ if(!GLOBAL_ON)return false;
+ // Keep client_version 1.07 for backwards compatibility with the existing Supabase insert policy.
+ const payload={
+   player_name:save.playerName.trim().slice(0,16),
+   mode:String(mode).slice(0,24),
+   detail:packDetail(detail),
+   reward:Math.max(0,Math.round(reward)),
+   score:Math.max(0,Math.round(rankScore)),
+   client_version:'1.07'
+ };
+ try{
+   await postGlobalPayload(payload);
    uiToast('GLOBAL SCORE SUBMITTED');return true;
- }catch(e){console.warn('Global score submit failed',e);uiToast('SAVED LOCALLY — ONLINE SYNC FAILED');return false}
+ }catch(e){
+   console.warn('Global score submit failed',e);
+   save.pendingScores.push(payload);save.pendingScores=save.pendingScores.slice(-30);persist();
+   uiToast('SAVED — WILL RETRY WHEN ONLINE');return false
+ }
 }
 async function fetchGlobalScores(){
- if(!GLOBAL_ON)return [...save.leaderboard].sort((a,b)=>(b.rankScore||0)-(a.rankScore||0)).slice(0,20).map(x=>({player_name:x.name,mode:x.mode,detail:x.detail,reward:x.reward,score:x.rankScore}));
- const u=`${LB_CFG.url}/rest/v1/neon_ping_scores?select=player_name,mode,detail,reward,score,created_at&order=score.desc,created_at.asc&limit=20`;
- const r=await fetch(u,{headers:globalHeaders()});
- if(!r.ok)throw new Error(`HTTP ${r.status}`);
- return await r.json();
+ if(!GLOBAL_ON){
+  return [...save.leaderboard].sort((a,b)=>(b.rankScore||0)-(a.rankScore||0)).slice(0,20).map(x=>({
+    player_name:x.name,mode:x.mode,detail:packDetail(x.detail,x.country),reward:x.reward,score:x.rankScore
+  }));
+ }
+ await flushPendingScores();
+ const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),6500);
+ try{
+   const u=`${LB_CFG.url}/rest/v1/neon_ping_scores?select=player_name,mode,detail,reward,score,created_at&order=score.desc,created_at.asc&limit=20`;
+   const r=await fetch(u,{headers:globalHeaders(),signal:controller.signal});
+   if(!r.ok)throw new Error(`HTTP ${r.status}`);
+   return await r.json();
+ }finally{clearTimeout(timer)}
+}
+function countryOptions(){
+ return COUNTRIES.map(([code,name])=>`<option value="${code}" ${save.countryCode===code?'selected':''}>${flagEmoji(code)} ${name}</option>`).join('');
+}
+function localRows(){
+ return [...save.leaderboard].sort((a,b)=>(b.rankScore||0)-(a.rankScore||0)).slice(0,20).map(x=>({
+   player_name:x.name,mode:x.mode,detail:packDetail(x.detail,x.country),reward:x.reward,score:x.rankScore
+ }));
+}
+function renderLeaderboardRows(rows){
+ return `<div class="leaderList">${rows.length?rows.map((r,i)=>{
+   const meta=unpackDetail(r.detail);
+   return `<div class="leaderRow ${i===0?'top1':i===1?'top2':i===2?'top3':''}">
+     <div class="leaderRank">${i+1}</div>
+     <div><div class="leaderName"><span class="flag">${flagEmoji(meta.country)}</span>${escapeHtml(r.player_name||'PLAYER')}</div>
+     <div class="leaderMeta">${escapeHtml(r.mode||'MATCH')} · ${escapeHtml(meta.detail||'')}</div></div>
+     <div class="leaderScoreBlock"><b>${Number(r.score||0)} PTS</b><small>+${Number(r.reward||0)} coins</small></div>
+   </div>`;
+ }).join(''):`<div class="sub">No ranked victories yet.</div>`}</div>`;
 }
 async function leaderboard(){
  center.style.display='grid';showPause(false);
  panel.innerHTML=`<div class="brandKicker">NEON PING ARENA <span>GLOBAL</span></div><h1><span>LEADERBOARD</span></h1>
- <div class="leaderTop"><div><b>${escapeHtml(save.playerName)}</b><small>Player profile</small></div><div class="globalStatus ${GLOBAL_ON?'online':'offline'}">${GLOBAL_ON?'● GLOBAL ONLINE':'● LOCAL FALLBACK'}</div></div>
+ <div class="leaderTop"><div><b>${hasLeaderboardProfile()?`${flagEmoji(save.countryCode)} ${escapeHtml(save.playerName)}`:'UNREGISTERED'}</b><small>${hasLeaderboardProfile()?'Leaderboard profile':'Choose a name to submit scores'}</small></div><div class="globalStatus ${GLOBAL_ON?'online':'offline'}">${GLOBAL_ON?'● GLOBAL ONLINE':'● LOCAL FALLBACK'}</div></div>
+ <div class="profileEditor"><input id="profileName" maxlength="16" placeholder="Player name" value="${escapeHtml(save.playerName)}"><select id="profileCountry">${countryOptions()}</select><button id="saveProfile">SAVE</button></div>
+ <div class="profileHint">Only named players are registered. Your selected country appears as a flag beside your name.</div>
  <div id="leaderRows"><div class="loadingRing"></div></div>
- <div class="row"><button class="secondary" id="setName">PLAYER NAME</button><button id="leaderBack">BACK</button></div>`;
- document.getElementById('setName').onclick=()=>{let n=prompt('Choose a leaderboard name (max 16 characters):',save.playerName);if(n!==null){n=n.replace(/[^A-Za-z0-9 _-]/g,'').trim().slice(0,16);if(n){save.playerName=n;persist();leaderboard()}}};
+ <div class="row"><button id="leaderBack">BACK</button></div>`;
+ document.getElementById('saveProfile').onclick=()=>{
+   let n=document.getElementById('profileName').value.replace(/[^A-Za-z0-9 _-]/g,'').trim().slice(0,16);
+   let cc=document.getElementById('profileCountry').value||'XX';
+   if(!n){uiToast('ENTER A PLAYER NAME');return}
+   save.playerName=n;save.countryCode=cc;persist();uiToast('PROFILE SAVED');leaderboard();
+ };
  document.getElementById('leaderBack').onclick=mainMenu;
  try{
    const rows=await fetchGlobalScores(),box=document.getElementById('leaderRows');
-   box.innerHTML=`<div class="leaderList">${rows.length?rows.map((r,i)=>`<div class="leaderRow ${i===0?'top1':i===1?'top2':i===2?'top3':''}"><div class="leaderRank">${i+1}</div><div><div class="leaderName">${escapeHtml(r.player_name||'PLAYER')}</div><div class="leaderMeta">${escapeHtml(r.mode||'MATCH')} · ${escapeHtml(r.detail||'')}</div></div><div class="leaderScoreBlock"><b>${Number(r.score||0)} PTS</b><small>+${Number(r.reward||0)} coins</small></div></div>`).join(''):`<div class="sub">No ranked victories yet.</div>`}</div>`;
+   if(box)box.innerHTML=renderLeaderboardRows(rows);
  }catch(e){
-   document.getElementById('leaderRows').innerHTML=`<div class="sub">Global rankings are temporarily unavailable. Your wins still save locally and can sync after the backend is available.</div>`;
+   console.warn('Leaderboard fetch failed',e);
+   const box=document.getElementById('leaderRows'),rows=localRows();
+   if(box)box.innerHTML=`<div class="sub" style="margin:10px 0">GLOBAL CONNECTION FAILED — SHOWING SAVED LOCAL SCORES</div>${renderLeaderboardRows(rows)}`;
  }
 }
 
@@ -283,7 +391,7 @@ function shop(tab='themes',fromPause=false){
  <div class="tabs"><button id="themesTab" class="${tab==='themes'?'':'secondary'}">THEMES</button><button id="ballsTab" class="${tab==='balls'?'':'secondary'}">BALLS</button></div>
  <div class="cardGrid">
  ${tab==='themes'?Object.entries(THEMES).map(([k,v])=>{let owned=save.ownedThemes.includes(k),active=save.theme===k;return `<div class="card ${active?'selected':''}" style="--accent:${v.arena}"><b>${v.name}</b><div class="preview" style="--accent:${v.arena}"><img class="bg" src="${v.img}"><div class="arena"></div><div class="mid"></div></div><div class="reward">${active?'EQUIPPED':owned?'OWNED':`<img src="coin.png">${v.price}`}</div><button data-buytheme="${k}" class="${owned?'secondary':''}" ${active?'disabled':''}>${active?'ACTIVE':owned?'EQUIP':'BUY'}</button></div>`}).join(''):
- Object.entries(BALLS).map(([k,v])=>{let owned=save.ownedBalls.includes(k),active=save.ball===k;return `<div class="card ${active?'selected':''}"><b>${v.name}</b><div class="ballPreview"><div class="ballFx fx-${k}"><img src="${v.img}"></div></div><div class="reward">${active?'EQUIPPED':owned?'OWNED':`<img src="coin.png">${v.price}`}</div><button data-buyball="${k}" class="${owned?'secondary':''}" ${active?'disabled':''}>${active?'ACTIVE':owned?'EQUIP':'BUY'}</button></div>`}).join('')}
+ Object.entries(BALLS).map(([k,v])=>{let owned=save.ownedBalls.includes(k),active=save.ball===k,visual=k==='plasma'?`<div class="plasmaAnim"><img src="ball-plasma-0.png"><img src="ball-plasma-1.png"><img src="ball-plasma-2.png"><img src="ball-plasma-3.png"></div>`:`<img src="${v.img}">`;return `<div class="card ${active?'selected':''}"><b>${v.name}</b><div class="ballPreview"><div class="ballFx fx-${k}">${visual}</div></div><div class="reward">${active?'EQUIPPED':owned?'OWNED':`<img src="coin.png">${v.price}`}</div><button data-buyball="${k}" class="${owned?'secondary':''}" ${active?'disabled':''}>${active?'ACTIVE':owned?'EQUIP':'BUY'}</button></div>`}).join('')}
  </div><div class="row"><button class="secondary" id="back">${fromPause?'BACK TO PAUSE':'BACK'}</button></div>`;
  document.getElementById('themesTab').onclick=()=>shop('themes',fromPause);document.getElementById('ballsTab').onclick=()=>shop('balls',fromPause);
  document.getElementById('back').onclick=()=>fromPause?pauseMenu():mainMenu();
@@ -293,12 +401,12 @@ function shop(tab='themes',fromPause=false){
 
 function startGame(){
  audio();state.playing=true;state.paused=false;state.pointLocked=false;state.pScore=0;state.aScore=0;state.rally=0;center.style.display='none';showPause(true);
- player.y=H/2;player.targetY=H/2;cpu.y=H/2;
- if(save.gameMode==='boss'){state.bossHP=state.bossMax=25;state.bossX=W*.82;state.bossY=H/2;state.bossDir=1;state.bossExploding=false;state.bossElapsed=0;bossHud.classList.add('show');updateBossHud()}else bossHud.classList.remove('show');
+ player.y=H/2;player.targetY=H/2;cpu.y=H/2;state.cpuTarget=H/2;state.cpuThink=0;
+ if(save.gameMode==='boss'){state.bossHP=state.bossMax=15;state.bossX=W*.82;state.bossY=H/2;state.bossDir=1;state.bossExploding=false;state.bossElapsed=0;bossHud.classList.add('show');updateBossHud()}else bossHud.classList.remove('show');
  refreshHud();ball.vx=ball.vy=0;ball.x=W/2;ball.y=H/2;showMessage('READY');
  setTimeout(()=>{if(state.playing&&!state.paused){showMessage('GO!','#63ffe8');resetBall(1)}},600);
 }
-function resetBall(dir=1){state.pointLocked=false;ball.x=save.gameMode==='boss'?W*.44:W/2;ball.y=H/2;ball.speed=save.gameMode==='boss'?620:590;state.rally=0;let a=Math.random()*.48-.24;ball.vx=Math.cos(a)*ball.speed*dir;ball.vy=Math.sin(a)*ball.speed;trail=[]}
+function resetBall(dir=1){state.pointLocked=false;ball.x=save.gameMode==='boss'?W*.44:W/2;ball.y=H/2;ball.speed=save.gameMode==='boss'?540:560;state.rally=0;let a=Math.random()*.48-.24;ball.vx=Math.cos(a)*ball.speed*dir;ball.vy=Math.sin(a)*ball.speed;trail=[]}
 
 function pauseGame(){if(!state.playing)return;state.paused=true;center.style.display='grid';showPause(false);pauseMenu()}
 function resumeGame(){state.paused=false;center.style.display='none';showPause(true);showMessage('RESUME')}
@@ -313,7 +421,7 @@ function paddleCollision(p,isPlayer){
  const x1=p.x-p.w/2,x2=p.x+p.w/2,y1=p.y-p.h/2,y2=p.y+p.h/2;
  if(ball.x+ball.r>x1&&ball.x-ball.r<x2&&ball.y+ball.r>y1&&ball.y-ball.r<y2&&((isPlayer&&ball.vx<0)||(!isPlayer&&ball.vx>0))){
   let rel=clamp((ball.y-p.y)/(p.h/2),-1,1),dir=isPlayer?1:-1,ang=rel*.92;
-  state.rally++;let ramp=save.gameMode==='boss'?42:DIFF[save.difficulty].ramp;ball.speed=Math.min(save.gameMode==='boss'?1250:1450,590+state.rally*ramp);
+  state.rally++;let d=save.gameMode==='classic'?DIFF[save.difficulty]:null,ramp=save.gameMode==='boss'?18:d.ramp,base=save.gameMode==='boss'?540:560;ball.speed=Math.min(save.gameMode==='boss'?980:d.maxBall,base+state.rally*ramp);
   ball.vx=Math.cos(ang)*ball.speed*dir;ball.vy=Math.sin(ang)*ball.speed+p.vy*.18;ball.x=isPlayer?x2+ball.r+2:x1-ball.r-2;
   burst(ball.x,ball.y,THEMES[save.theme].arena,18,280);ring(ball.x,ball.y,THEMES[save.theme].arena);state.shake=8;sHit();
  }
@@ -336,30 +444,31 @@ function endClassic(win){
 
 function updateBossHud(){let done=state.bossMax-state.bossHP;bossHits.textContent=`${done} / ${state.bossMax} HITS`;bossHealth.style.width=`${Math.max(0,state.bossHP/state.bossMax*100)}%`}
 function bossHit(){
- state.bossHP--;updateBossHud();state.shake=15;burst(state.bossX,state.bossY,'#ff5b37',38,430);
+ state.bossHP--;updateBossHud();state.shake=13;burst(state.bossX,state.bossY,'#ff5b37',34,360);
  let damageHits=state.bossMax-state.bossHP;
- if(damageHits%5===0 && state.bossHP>0){burst(state.bossX,state.bossY,'#ffffff',55,520);showMessage(`DAMAGE ${damageHits}/${state.bossMax}!`,'#ff7654');state.shake=22;sBossDamage()}
+ if(damageHits%3===0 && state.bossHP>0){burst(state.bossX,state.bossY,'#ffffff',48,430);showMessage(`DAMAGE ${damageHits}/${state.bossMax}!`,'#ff7654');state.shake=18;sBossDamage()}
  else showMessage(`${damageHits}/${state.bossMax}`,'#ff7654');
  sHit();
  if(state.bossHP<=0){bossWin();return}
- // The boss always catches the incoming ball. Returns become faster and nastier over time.
+
+ // Fairer boss return: still threatening, but the ball speed climbs gradually.
  let hits=state.bossMax-state.bossHP;
- ball.speed=Math.min(1550,650+hits*27+state.bossElapsed*5.5);
- let danger=clamp(state.bossElapsed/55 + hits/state.bossMax*.55,0,1);
- let targetOffset=(Math.random()<.5?-1:1)*(player.h*.28 + player.h*.34*danger);
- let targetY=clamp(player.y+targetOffset,30,H-30);
- let dx=Math.max(120,state.bossX-player.x),dy=targetY-state.bossY;
- let ang=clamp(Math.atan2(dy,dx),-.78,.78);
+ ball.speed=Math.min(1040,555+hits*18+state.bossElapsed*2.6);
+ let danger=clamp(state.bossElapsed/80 + hits/state.bossMax*.32,0,1);
+ let targetOffset=(Math.random()<.5?-1:1)*(player.h*.14 + player.h*.24*danger);
+ let targetY=clamp(player.y+targetOffset,38,H-38);
+ let dx=Math.max(150,state.bossX-player.x),dy=targetY-state.bossY;
+ let ang=clamp(Math.atan2(dy,dx),-.58,.58);
  ball.vx=-Math.abs(Math.cos(ang)*ball.speed);
  ball.vy=Math.sin(ang)*ball.speed;
  let bw=Math.min(H*.34,210),bossPlane=state.bossX-bw*.48;
- ball.x=bossPlane-ball.r-3;
+ ball.x=bossPlane-ball.r-4;
  ball.y=clamp(ball.y,ball.r+15,H-ball.r-15);
 }
 function bossWin(){
  state.bossExploding=true;ball.vx=ball.vy=0;state.playing=false;showPause(false);
  burst(state.bossX,state.bossY,'#ff431f',150,760);burst(state.bossX,state.bossY,'#ffffff',90,620);state.shake=30;save.coins+=50;submitGlobalScore('BOSS MODE',`${state.bossMax} hits`,50,600+Math.max(0,120-Math.round(state.bossElapsed*2)));persist();bossHud.classList.remove('show');showMessage('BOSS DOWN!','#ffb05f');
- sVictory();setTimeout(sReward,260);setTimeout(()=>{center.style.display='grid';panel.innerHTML=`<div class="resultScreen">${confettiHtml()}<div class="resultEmblem">☠</div><div class="resultTitle win">BOSS DESTROYED</div><div class="sub">25 direct hits. The arena is yours.</div><div class="rewardReveal"><div class="rewardAmount"><img src="coin.png">+50 COINS</div><div class="sub" style="margin:6px 0 0">${save.coins} total balance</div></div><div class="row"><button id="again">FIGHT AGAIN</button><button class="secondary" id="back">ARENA MENU</button></div></div>`;document.getElementById('again').onclick=startGame;document.getElementById('back').onclick=mainMenu},850)
+ sVictory();setTimeout(sReward,260);setTimeout(()=>{center.style.display='grid';panel.innerHTML=`<div class="resultScreen">${confettiHtml()}<div class="resultEmblem">☠</div><div class="resultTitle win">BOSS DESTROYED</div><div class="sub">15 direct hits. The arena is yours.</div><div class="rewardReveal"><div class="rewardAmount"><img src="coin.png">+50 COINS</div><div class="sub" style="margin:6px 0 0">${save.coins} total balance</div></div><div class="row"><button id="again">FIGHT AGAIN</button><button class="secondary" id="back">ARENA MENU</button></div></div>`;document.getElementById('again').onclick=startGame;document.getElementById('back').onclick=mainMenu},850)
 }
 function bossLose(reason){
  if(state.pointLocked||!state.playing)return;state.pointLocked=true;state.playing=false;ball.vx=ball.vy=0;showPause(false);bossHud.classList.remove('show');sScore(false);showMessage('GAME OVER','#ff493f');
@@ -374,14 +483,34 @@ function update(dt){
  player.y=clamp(player.y,player.h/2+16,H-player.h/2-16);player.vy=(player.y-py)/Math.max(.001,dt);
 
  if(save.gameMode==='classic'){
-  cpu.h=player.h;cpu.x=W-34;const d=DIFF[save.difficulty];let target=H/2;
-  if(ball.vx>0){let t=(cpu.x-ball.x)/ball.vx,pred=ball.y+ball.vy*t*d.predict+(1-d.predict)*ball.y,min=ball.r+18,max=H-ball.r-18,span=max-min,q=(pred-min)%(span*2);if(q<0)q+=span*2;target=min+(q>span?span*2-q:q)}else target=H/2+Math.sin(state.time*1.4)*H*.1;
-  target+=Math.sin(state.time*2.1)*d.error+Math.sin(state.time*.7)*d.error*.4;let oy=cpu.y,diff=target-cpu.y;cpu.y+=clamp(diff,-d.cpu*dt,d.cpu*dt);cpu.y=clamp(cpu.y,cpu.h/2+16,H-cpu.h/2-16);cpu.vy=(cpu.y-oy)/Math.max(.001,dt);
+  cpu.h=player.h;cpu.x=W-34;const d=DIFF[save.difficulty];
+  state.cpuThink-=dt;
+  if(state.cpuThink<=0){
+    state.cpuThink=d.reaction;
+    let target=H/2;
+    if(ball.vx>0){
+      let t=Math.max(0,(cpu.x-ball.x)/Math.max(1,ball.vx));
+      let rawPred=ball.y+ball.vy*t;
+      let min=ball.r+18,max=H-ball.r-18,span=max-min,q=(rawPred-min)%(span*2);
+      if(q<0)q+=span*2;
+      let exact=min+(q>span?span*2-q:q);
+      // Difficulty changes reaction time, speed and prediction quality. The bot never intentionally dodges the ball.
+      let blended=ball.y+(exact-ball.y)*d.predict;
+      let noise=(Math.random()*2-1)*d.error;
+      state.cpuTarget=clamp(blended+noise,cpu.h/2+16,H-cpu.h/2-16);
+    }else{
+      state.cpuTarget=H/2;
+    }
+  }
+  let oy=cpu.y,diff=state.cpuTarget-cpu.y;
+  cpu.y+=clamp(diff,-d.cpu*dt,d.cpu*dt);
+  cpu.y=clamp(cpu.y,cpu.h/2+16,H-cpu.h/2-16);
+  cpu.vy=(cpu.y-oy)/Math.max(.001,dt);
  } else {
   state.bossElapsed+=dt;
   let progress=(state.bossMax-state.bossHP)/state.bossMax;
   // Time is the main pressure: the skull continuously advances and accelerates slightly.
-  let advance=state.bossElapsed*6.0 + Math.pow(state.bossElapsed,1.35)*1.1 + progress*W*.07;
+  let advance=state.bossElapsed*3.35 + Math.pow(state.bossElapsed,1.24)*.54 + progress*W*.045;
   let dangerLine=player.x+Math.max(128,W*.12);
   state.bossX=Math.max(dangerLine,W*.82-advance);
   let bh=Math.min(H*.34,210);
@@ -389,7 +518,7 @@ function update(dt){
   if(ball.vx>0){
     state.bossY=clamp(ball.y,bh/2+34,H-bh/2-28);
   }else{
-    state.bossY+=state.bossDir*(115+progress*185+state.bossElapsed*1.8)*dt;
+    state.bossY+=state.bossDir*(82+progress*105+state.bossElapsed*.75)*dt;
     if(state.bossY<bh/2+55){state.bossY=bh/2+55;state.bossDir=1}
     if(state.bossY>H-bh/2-30){state.bossY=H-bh/2-30;state.bossDir=-1}
   }
@@ -413,18 +542,53 @@ function update(dt){
 }
 
 function rr(x,y,w,h,r){ctx.beginPath();ctx.roundRect(x,y,w,h,r)}
+function drawThemeAmbient(theme){
+ if(theme==='lava'){
+   for(let i=0;i<30;i++){
+     let seed=i*91.731,phase=(state.time*(.18+(i%5)*.025)+seed)%1;
+     let x=((i*137.5)%100)/100*W,y=H-(phase*(H*.82));
+     let size=1.4+(i%4)*.75,alpha=(1-phase)*.72;
+     ctx.globalAlpha=alpha;ctx.fillStyle=i%3===0?'#ffe65c':'#ff6a18';
+     ctx.beginPath();ctx.ellipse(x+Math.sin(state.time*2+seed)*12,y,size,size*1.8,-.2,0,Math.PI*2);ctx.fill();
+   }
+   ctx.globalAlpha=1;
+ }else if(theme==='ice'){
+   for(let i=0;i<24;i++){
+     let seed=i*73.17,phase=(state.time*(.055+(i%4)*.012)+seed)%1;
+     let x=((i*173.3)%100)/100*W+Math.sin(state.time*.8+seed)*18,y=phase*H;
+     ctx.globalAlpha=.22+(i%5)*.06;ctx.fillStyle='#dffaff';
+     ctx.beginPath();ctx.arc(x,y,1+(i%3)*.7,0,Math.PI*2);ctx.fill();
+   }
+   ctx.globalAlpha=1;
+ }
+}
 function draw(){
  let th=THEMES[save.theme],b=BALLS[save.ball],sx=(Math.random()-.5)*state.shake,sy=(Math.random()-.5)*state.shake;ctx.save();ctx.translate(sx,sy);
  let bg=imgs[th.img];if(bg&&bg.complete)ctx.drawImage(bg,0,0,W,H);else{ctx.fillStyle='#060912';ctx.fillRect(0,0,W,H)}
- ctx.fillStyle='rgba(0,0,0,.22)';ctx.fillRect(0,0,W,H);
+ drawThemeAmbient(save.theme);
+ ctx.fillStyle='rgba(0,0,0,.18)';ctx.fillRect(0,0,W,H);
  ctx.strokeStyle=th.arena;ctx.lineWidth=3;ctx.shadowColor=th.arena;ctx.shadowBlur=18;rr(10,10,W-20,H-20,18);ctx.stroke();ctx.shadowBlur=0;
  ctx.setLineDash([11,17]);ctx.strokeStyle='rgba(255,255,255,.25)';ctx.beginPath();ctx.moveTo(W/2,22);ctx.lineTo(W/2,H-22);ctx.stroke();ctx.setLineDash([]);
  rings.forEach(r=>{ctx.globalAlpha=Math.max(0,r.life/r.max)*.75;ctx.beginPath();ctx.arc(r.x,r.y,r.r,0,Math.PI*2);ctx.strokeStyle=r.c;ctx.lineWidth=4;ctx.stroke()});ctx.globalAlpha=1;
  trail.forEach(t=>{let a=Math.max(0,t.life/.18);ctx.globalAlpha=a*.34;let bi=imgs[b.img];if(bi&&bi.complete)ctx.drawImage(bi,t.x-ball.r*a,t.y-ball.r*a,ball.r*2*a,ball.r*2*a)});ctx.globalAlpha=1;
  function paddle(p){rr(p.x-p.w/2,p.y-p.h/2,p.w,p.h,8);ctx.fillStyle='#fff';ctx.shadowColor=th.arena;ctx.shadowBlur=18;ctx.fill();ctx.shadowBlur=0;ctx.strokeStyle=th.arena;ctx.lineWidth=4;ctx.stroke()}
  paddle(player);if(save.gameMode==='classic')paddle(cpu);
- let bi=imgs[b.img];if(bi&&bi.complete)ctx.drawImage(bi,ball.x-ball.r*1.55,ball.y-ball.r*1.55,ball.r*3.1,ball.r*3.1);else{ctx.fillStyle='#dfff3f';ctx.beginPath();ctx.arc(ball.x,ball.y,ball.r,0,Math.PI*2);ctx.fill()}
- if(save.gameMode==='boss'&&!state.bossExploding){let bossStage=Math.min(4,Math.floor((state.bossMax-state.bossHP)/5)),boss=imgs[`boss-skull-${bossStage}.png`]||imgs['boss-skull.png'],bw=Math.min(H*.34,210);if(boss&&boss.complete){ctx.shadowColor='#ff3f20';ctx.shadowBlur=25;ctx.drawImage(boss,state.bossX-bw*.5,state.bossY-bw*.5,bw,bw);ctx.shadowBlur=0}}
+ let bi;
+ if(save.ball==='plasma'){
+   const frame=Math.floor(state.time*10)%4;
+   bi=imgs[`ball-plasma-${frame}.png`]||imgs[b.img];
+ }else bi=imgs[b.img];
+ if(bi&&bi.complete)ctx.drawImage(bi,ball.x-ball.r*1.65,ball.y-ball.r*1.65,ball.r*3.3,ball.r*3.3);
+ else{ctx.fillStyle='#dfff3f';ctx.beginPath();ctx.arc(ball.x,ball.y,ball.r,0,Math.PI*2);ctx.fill()}
+ if(save.ball==='plasma'){
+   for(let i=0;i<4;i++){
+     let a=state.time*(2.6+i*.25)+i*Math.PI/2,r=ball.r*(1.3+(i%2)*.25);
+     ctx.globalAlpha=.55;ctx.fillStyle=i%2?'#75e8ff':'#ff76ff';
+     ctx.beginPath();ctx.arc(ball.x+Math.cos(a)*r,ball.y+Math.sin(a)*r,1.7+(i%2),0,Math.PI*2);ctx.fill();
+   }
+   ctx.globalAlpha=1;
+ }
+ if(save.gameMode==='boss'&&!state.bossExploding){let done=state.bossMax-state.bossHP,bossStage=Math.min(4,Math.floor(done/3)),boss=imgs[`boss-skull-${bossStage}.png`]||imgs['boss-skull.png'],bw=Math.min(H*.34,210);if(boss&&boss.complete){ctx.shadowColor='#ff3f20';ctx.shadowBlur=25;ctx.drawImage(boss,state.bossX-bw*.5,state.bossY-bw*.5,bw,bw);ctx.shadowBlur=0}}
  particles.forEach(p=>{ctx.globalAlpha=Math.max(0,p.life/p.max);ctx.fillStyle=p.c;ctx.fillRect(p.x,p.y,p.size,p.size)});ctx.globalAlpha=1;ctx.restore()
 }
 function loop(now){let dt=Math.min(.024,(now-last)/1000);last=now;update(dt);draw();requestAnimationFrame(loop)}requestAnimationFrame(loop);

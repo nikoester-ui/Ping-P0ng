@@ -38,3 +38,6 @@ with check (
 
 create index if not exists neon_ping_scores_rank_idx
 on public.neon_ping_scores (score desc, created_at asc);
+
+-- v1.08 note: country flag is stored backwards-compatibly as a 2-letter prefix in detail (e.g. CH|5-2).
+-- v1.08 intentionally submits client_version='1.07' so existing insert policies continue to work without migration.
