@@ -41,7 +41,7 @@ button:active,.card:active{transform:scale(.98)}
 .cardTitle{display:flex;align-items:center;gap:10px;font-size:17px;font-weight:950}.diffIcon{width:45px;height:45px;object-fit:contain;filter:drop-shadow(0 0 8px rgba(255,255,255,.18))}
 .easy{--accent:#65ff87;--glow:rgba(101,255,135,.35);border-color:rgba(101,255,135,.35)}.normal{--accent:#68a8ff;--glow:rgba(104,168,255,.35);border-color:rgba(104,168,255,.35)}.hard{--accent:#ff6666;--glow:rgba(255,102,102,.35);border-color:rgba(255,102,102,.35)}.impossible{--accent:#c971ff;--glow:rgba(201,113,255,.35);border-color:rgba(201,113,255,.35)}
 .reward{display:flex;align-items:center;gap:6px;margin-top:8px;font-size:12px;font-weight:900;color:#ffdf57}.reward img{width:17px;height:17px}
-.modePick{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}.modePick .card{text-align:center}.bossCard{--accent:#ff7d42;--glow:rgba(255,80,20,.45);border-color:rgba(255,91,43,.38);background:linear-gradient(135deg,rgba(110,22,4,.25),rgba(20,5,4,.25))}
+.modePick{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:14px}.modePick .card{text-align:center}.bossCard{--accent:#ff7d42;--glow:rgba(255,80,20,.45);border-color:rgba(255,91,43,.38);background:linear-gradient(135deg,rgba(110,22,4,.25),rgba(20,5,4,.25))}
 .coinBig{display:flex;align-items:center;justify-content:center;gap:8px;color:#ffdf57;font-size:22px;font-weight:950;-webkit-text-stroke:1px #2d1800}.coinBig img{width:27px;height:27px}
 .shopHead{display:flex;align-items:center;justify-content:center;gap:12px}.shopHead img{width:38px;height:38px}
 .tabs{display:flex;justify-content:center;gap:8px;margin:12px 0}
@@ -161,10 +161,10 @@ const scoreText=document.getElementById('scoreText'),scoreSub=document.getElemen
 let W=1280,H=720,DPR=1,last=performance.now(),particles=[],rings=[],trail=[];
 
 const DIFF={
- easy:{name:'EASY',reward:15,cpu:230,error:42,predict:.58,reaction:.22,ramp:15,maxBall:820,accent:'#65ff87',icon:'skull-easy.png',desc:'Slow tracking and gentle rallies for new players.'},
- normal:{name:'NORMAL',reward:30,cpu:300,error:28,predict:.72,reaction:.16,ramp:19,maxBall:900,accent:'#68a8ff',icon:'skull-normal.png',desc:'Friendly but responsive. A fair everyday challenge.'},
- hard:{name:'HARD',reward:50,cpu:385,error:17,predict:.84,reaction:.11,ramp:23,maxBall:980,accent:'#ff6666',icon:'skull-hard.png',desc:'Fast enough to push you without feeling unfair.'},
- impossible:{name:'IMPOSSIBLE',reward:80,cpu:465,error:9,predict:.93,reaction:.075,ramp:27,maxBall:1060,accent:'#c971ff',icon:'skull-impossible.png',desc:'The toughest kid-friendly mode: demanding, but beatable.'}
+ easy:{name:'EASY',reward:15,cpu:330,cpuH:.78,error:48,predict:.62,reaction:.18,startBall:760,ramp:34,maxBall:1080,accent:'#65ff87',icon:'skull-easy.png',desc:'Fast rallies, slower reactions. The AI always tries to return the ball.'},
+ normal:{name:'NORMAL',reward:30,cpu:420,cpuH:.84,error:33,predict:.76,reaction:.13,startBall:820,ramp:38,maxBall:1180,accent:'#68a8ff',icon:'skull-normal.png',desc:'Quick and competitive. A real challenge for regular players.'},
+ hard:{name:'HARD',reward:50,cpu:520,cpuH:.90,error:21,predict:.87,reaction:.09,startBall:880,ramp:43,maxBall:1280,accent:'#ff6666',icon:'skull-hard.png',desc:'Aggressive tracking and fast exchanges. Mistakes get punished.'},
+ impossible:{name:'IMPOSSIBLE',reward:80,cpu:620,cpuH:.95,error:12,predict:.94,reaction:.062,startBall:940,ramp:48,maxBall:1400,accent:'#c971ff',icon:'skull-impossible.png',desc:'Sweaty-kid difficulty: brutal, fast, but still human-beatable.'}
 };
 const THEMES={
  space:{name:'Nebula Arena',price:0,img:'theme-space.png',arena:'#68ddff'},
@@ -178,10 +178,11 @@ const BALLS={
  fire:{name:'Fireball',price:110,img:'ball-fire.png'},
  ice:{name:'Ice Crystal',price:160,img:'ball-ice.png'},
  eight:{name:'8-Ball',price:220,img:'ball-eight.png'},
- plasma:{name:'Plasma Orb',price:300,img:'ball-plasma.png'}
+ plasma:{name:'Plasma Orb',price:300,img:'ball-plasma.png'},
+ smiley:{name:'Smiley Ball',price:180,img:'ball-smiley.png'}
 };
 const imgs={};
-[...Object.values(THEMES).map(x=>x.img),...Object.values(BALLS).map(x=>x.img),'ball-plasma-0.png','ball-plasma-1.png','ball-plasma-2.png','ball-plasma-3.png','boss-skull.png','boss-skull-0.png','boss-skull-1.png','boss-skull-2.png','boss-skull-3.png','boss-skull-4.png'].forEach(src=>{const i=new Image();i.src=src;imgs[src]=i});
+[...Object.values(THEMES).map(x=>x.img),...Object.values(BALLS).map(x=>x.img),'ball-plasma-0.png','ball-plasma-1.png','ball-plasma-2.png','ball-plasma-3.png','ball-smiley.png','boss-skull.png','boss-skull-0.png','boss-skull-1.png','boss-skull-2.png','boss-skull-3.png','boss-skull-4.png'].forEach(src=>{const i=new Image();i.src=src;imgs[src]=i});
 
 const defaults={coins:0,difficulty:'normal',gameMode:'classic',theme:'space',ball:'classic',ownedThemes:['space'],ownedBalls:['classic'],playerName:'',countryCode:'',leaderboard:[],pendingScores:[]};
 let raw={};try{raw=JSON.parse(localStorage.getItem('neonPingSave')||'{}')||{}}catch(e){}
@@ -199,7 +200,7 @@ if(!save.ownedBalls.includes('classic'))save.ownedBalls.unshift('classic');
 if(!THEMES[save.theme])save.theme='space';
 if(!BALLS[save.ball])save.ball='classic';
 if(!DIFF[save.difficulty])save.difficulty='normal';
-if(!['classic','boss'].includes(save.gameMode))save.gameMode='classic';
+if(!['classic','boss','versus'].includes(save.gameMode))save.gameMode='classic';
 if(typeof save.playerName!=='string')save.playerName='';
 if(save.playerName.trim().toUpperCase()==='PLAYER')save.playerName='';
 if(typeof save.countryCode!=='string')save.countryCode='';
@@ -236,16 +237,25 @@ function clamp(v,a,b){return Math.max(a,Math.min(b,v))}
 function showMessage(t,c='#fff'){message.textContent=t;message.style.color=c;message.animate([{opacity:0,transform:'translate(-50%,-50%) scale(.55)'},{opacity:1,transform:'translate(-50%,-50%) scale(1.06)',offset:.38},{opacity:0,transform:'translate(-50%,-50%) scale(1.25)'}],{duration:600})}
 function burst(x,y,c,n=30,p=380){for(let i=0;i<n;i++){let a=Math.random()*Math.PI*2,s=70+Math.random()*p;particles.push({x,y,vx:Math.cos(a)*s,vy:Math.sin(a)*s,life:.3+Math.random()*.5,max:.8,size:2+Math.random()*5,c})}}
 function ring(x,y,c){rings.push({x,y,r:8,life:.38,max:.38,c})}
-function refreshHud(){persist();scoreText.textContent=state.playing&&save.gameMode==='classic'?`${state.pScore} - ${state.aScore}`:'0 - 0';scoreSub.textContent=save.gameMode==='boss'?'BOSS MODE':'FIRST TO 5';modePill.textContent=save.gameMode==='boss'?'BOSS':DIFF[save.difficulty].name;modePill.style.color=save.gameMode==='boss'?'#ff8e61':DIFF[save.difficulty].accent}
+function refreshHud(){
+ persist();
+ const boss=save.gameMode==='boss',vs=save.gameMode==='versus';
+ scoreText.parentElement.style.display=boss?'none':'';
+ scoreText.textContent=`${state.pScore} - ${state.aScore}`;
+ scoreSub.textContent=vs?'PLAYER 1  •  PLAYER 2':'FIRST TO 5';
+ modePill.textContent=boss?'BOSS':vs?'2 PLAYER':DIFF[save.difficulty].name;
+ modePill.style.color=boss?'#ff8e61':vs?'#ffd85f':DIFF[save.difficulty].accent;
+}
 function showPause(show){pauseBtn.classList.toggle('show',show)}
 
 function mainMenu(){
  state.playing=false;state.paused=false;center.style.display='grid';showPause(false);bossHud.classList.remove('show');refreshHud();
- panel.innerHTML=`<div class="brandKicker">NEON PING ARENA <span>v1.08</span></div><h1>NEON <span>PING</span></h1><div class="sub">Enter the arena. Master the AI, defeat the boss, climb the global rankings, and build your collection.</div>
+ panel.innerHTML=`<div class="brandKicker">NEON PING ARENA <span>v1.09</span></div><h1>NEON <span>PING</span></h1><div class="sub">Enter the arena. Master the AI, defeat the boss, climb the global rankings, and build your collection.</div>
  <div class="coinBig"><img src="coin.png">${save.coins}</div>
  <div class="modePick">
-   <div class="card ${save.gameMode==='classic'?'selected':''}" data-gamemode="classic" style="--accent:#63ffe8"><b>CLASSIC</b><div class="sub" style="margin:6px 0 0">First to 5 points against the AI.</div></div>
-   <div class="card bossCard ${save.gameMode==='boss'?'selected':''}" data-gamemode="boss"><img class="diffIcon" src="boss-skull.png"><b>BOSS MODE</b><div class="sub" style="margin:6px 0 0">15 hits. The skull visibly breaks every 3 hits and advances at a fairer pace. Reward: 50 coins.</div></div>
+   <div class="card ${save.gameMode==='classic'?'selected':''}" data-gamemode="classic" style="--accent:#63ffe8"><b>CLASSIC</b><div class="sub" style="margin:6px 0 0">First to 5 against the AI. Faster, shorter rallies.</div></div>
+   <div class="card ${save.gameMode==='versus'?'selected':''}" data-gamemode="versus" style="--accent:#ffd85f"><b>2 PLAYER</b><div class="sub" style="margin:6px 0 0">Share one phone: left half controls P1, right half controls P2.</div></div>
+   <div class="card bossCard ${save.gameMode==='boss'?'selected':''}" data-gamemode="boss"><img class="diffIcon" src="boss-skull.png"><b>BOSS MODE</b><div class="sub" style="margin:6px 0 0">15 hits. Faster returns and stronger time pressure. Reward: 50 coins.</div></div>
  </div>
  ${save.gameMode==='classic'?`<div class="cardGrid">${Object.entries(DIFF).map(([k,v])=>`<div class="card ${k} ${save.difficulty===k?'selected':''}" data-diff="${k}"><div class="cardTitle"><img class="diffIcon" src="${v.icon}"><span>${v.name}</span></div><div class="sub" style="margin:8px 0 0">${v.desc}</div><div class="reward"><img src="coin.png">${v.reward} COINS PER MATCH WIN</div></div>`).join('')}</div>`:''}
  <div class="row"><button id="play">PLAY</button><button class="secondary" id="shop"><span style="display:flex;gap:8px;align-items:center"><img src="shop-white.png" style="width:18px">SHOP</span></button><button class="secondary" id="leaderboard">LEADERBOARD</button></div>`;
@@ -279,7 +289,7 @@ function unpackDetail(raw){
  const m=raw.match(/^([A-Z]{2})\|(.*)$/);
  return m?{country:m[1],detail:m[2]}:{country:'XX',detail:raw};
 }
-function globalHeaders(extra={}){return {'apikey':LB_CFG.publishableKey||'','Authorization':`Bearer ${LB_CFG.publishableKey||''}`,'Content-Type':'application/json',...extra}}
+function globalHeaders(extra={}){return {'apikey':LB_CFG.publishableKey||'','Content-Type':'application/json',...extra}}
 function hasLeaderboardProfile(){return !!(save.playerName&&save.playerName.trim())}
 function addLocalLeaderboard(mode,detail,reward,rankScore,country=save.countryCode){
  if(!hasLeaderboardProfile())return;
@@ -287,7 +297,7 @@ function addLocalLeaderboard(mode,detail,reward,rankScore,country=save.countryCo
  save.leaderboard=save.leaderboard.sort((a,b)=>(b.rankScore||0)-(a.rankScore||0)||(b.time||0)-(a.time||0)).slice(0,30);persist();
 }
 async function postGlobalPayload(payload){
- const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),6500);
+ const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),9000);
  try{
   const r=await fetch(`${LB_CFG.url}/rest/v1/neon_ping_scores`,{
     method:'POST',headers:globalHeaders({'Prefer':'return=minimal'}),body:JSON.stringify(payload),signal:controller.signal
@@ -333,7 +343,7 @@ async function fetchGlobalScores(){
   }));
  }
  await flushPendingScores();
- const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),6500);
+ const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),9000);
  try{
    const u=`${LB_CFG.url}/rest/v1/neon_ping_scores?select=player_name,mode,detail,reward,score,created_at&order=score.desc,created_at.asc&limit=20`;
    const r=await fetch(u,{headers:globalHeaders(),signal:controller.signal});
@@ -387,7 +397,7 @@ async function leaderboard(){
 
 function shop(tab='themes',fromPause=false){
  center.style.display='grid';showPause(false);
- panel.innerHTML=`<div class="shopHead"><img src="shop-white.png"><h1>SHOP</h1></div><div class="sub">Every theme is a different illustrated arena. Theme purchases also change the arena barrier glow.</div><div class="coinBig"><img src="coin.png">${save.coins}</div>
+ panel.innerHTML=`<div class="shopHead"><img src="shop-white.png"><h1>SHOP</h1></div><div class="sub">Every theme is a different illustrated arena. Themes change the whole arena atmosphere.</div><div class="coinBig"><img src="coin.png">${save.coins}</div>
  <div class="tabs"><button id="themesTab" class="${tab==='themes'?'':'secondary'}">THEMES</button><button id="ballsTab" class="${tab==='balls'?'':'secondary'}">BALLS</button></div>
  <div class="cardGrid">
  ${tab==='themes'?Object.entries(THEMES).map(([k,v])=>{let owned=save.ownedThemes.includes(k),active=save.theme===k;return `<div class="card ${active?'selected':''}" style="--accent:${v.arena}"><b>${v.name}</b><div class="preview" style="--accent:${v.arena}"><img class="bg" src="${v.img}"><div class="arena"></div><div class="mid"></div></div><div class="reward">${active?'EQUIPPED':owned?'OWNED':`<img src="coin.png">${v.price}`}</div><button data-buytheme="${k}" class="${owned?'secondary':''}" ${active?'disabled':''}>${active?'ACTIVE':owned?'EQUIP':'BUY'}</button></div>`}).join(''):
@@ -401,12 +411,18 @@ function shop(tab='themes',fromPause=false){
 
 function startGame(){
  audio();state.playing=true;state.paused=false;state.pointLocked=false;state.pScore=0;state.aScore=0;state.rally=0;center.style.display='none';showPause(true);
- player.y=H/2;player.targetY=H/2;cpu.y=H/2;state.cpuTarget=H/2;state.cpuThink=0;
+ player.y=H/2;player.targetY=H/2;cpu.y=H/2;cpu.targetY=H/2;state.cpuTarget=H/2;state.cpuThink=0;
  if(save.gameMode==='boss'){state.bossHP=state.bossMax=15;state.bossX=W*.82;state.bossY=H/2;state.bossDir=1;state.bossExploding=false;state.bossElapsed=0;bossHud.classList.add('show');updateBossHud()}else bossHud.classList.remove('show');
  refreshHud();ball.vx=ball.vy=0;ball.x=W/2;ball.y=H/2;showMessage('READY');
  setTimeout(()=>{if(state.playing&&!state.paused){showMessage('GO!','#63ffe8');resetBall(1)}},600);
 }
-function resetBall(dir=1){state.pointLocked=false;ball.x=save.gameMode==='boss'?W*.44:W/2;ball.y=H/2;ball.speed=save.gameMode==='boss'?540:560;state.rally=0;let a=Math.random()*.48-.24;ball.vx=Math.cos(a)*ball.speed*dir;ball.vy=Math.sin(a)*ball.speed;trail=[]}
+function resetBall(dir=1){
+ state.pointLocked=false;ball.x=save.gameMode==='boss'?W*.44:W/2;ball.y=H/2;state.rally=0;
+ if(save.gameMode==='boss')ball.speed=760;
+ else if(save.gameMode==='versus')ball.speed=820;
+ else ball.speed=DIFF[save.difficulty].startBall;
+ let a=Math.random()*.56-.28;ball.vx=Math.cos(a)*ball.speed*dir;ball.vy=Math.sin(a)*ball.speed;trail=[];
+}
 
 function pauseGame(){if(!state.playing)return;state.paused=true;center.style.display='grid';showPause(false);pauseMenu()}
 function resumeGame(){state.paused=false;center.style.display='none';showPause(true);showMessage('RESUME')}
@@ -414,22 +430,37 @@ function pauseMenu(){panel.innerHTML=`<h1><span style="font-size:.7em">Ⅱ</span
 pauseBtn.onclick=pauseGame;
 
 addEventListener('keydown',e=>{keys.add(e.key.toLowerCase());if((e.key==='Escape'||e.key.toLowerCase()==='p')&&state.playing){state.paused?resumeGame():pauseGame()}});addEventListener('keyup',e=>keys.delete(e.key.toLowerCase()));
-function pointer(e){if(state.paused)return;const r=canvas.getBoundingClientRect(),clientY=e.touches?e.touches[0].clientY:e.clientY;player.targetY=clientY-r.top}
-canvas.addEventListener('mousemove',pointer);canvas.addEventListener('touchstart',e=>{audio();pointer(e)},{passive:true});canvas.addEventListener('touchmove',e=>{e.preventDefault();pointer(e)},{passive:false});
+function setPointerTarget(clientX,clientY){
+ if(state.paused)return;
+ const r=canvas.getBoundingClientRect(),x=clientX-r.left,y=clientY-r.top;
+ if(save.gameMode==='versus'){if(x<r.width/2)player.targetY=y;else cpu.targetY=y}
+ else player.targetY=y;
+}
+canvas.addEventListener('mousemove',e=>setPointerTarget(e.clientX,e.clientY));
+canvas.addEventListener('touchstart',e=>{audio();for(const t of e.touches)setPointerTarget(t.clientX,t.clientY)},{passive:true});
+canvas.addEventListener('touchmove',e=>{e.preventDefault();for(const t of e.touches)setPointerTarget(t.clientX,t.clientY)},{passive:false});
 
 function paddleCollision(p,isPlayer){
  const x1=p.x-p.w/2,x2=p.x+p.w/2,y1=p.y-p.h/2,y2=p.y+p.h/2;
  if(ball.x+ball.r>x1&&ball.x-ball.r<x2&&ball.y+ball.r>y1&&ball.y-ball.r<y2&&((isPlayer&&ball.vx<0)||(!isPlayer&&ball.vx>0))){
   let rel=clamp((ball.y-p.y)/(p.h/2),-1,1),dir=isPlayer?1:-1,ang=rel*.92;
-  state.rally++;let d=save.gameMode==='classic'?DIFF[save.difficulty]:null,ramp=save.gameMode==='boss'?18:d.ramp,base=save.gameMode==='boss'?540:560;ball.speed=Math.min(save.gameMode==='boss'?980:d.maxBall,base+state.rally*ramp);
+  state.rally++;
+  let d=save.gameMode==='classic'?DIFF[save.difficulty]:null;
+  let base=save.gameMode==='boss'?760:save.gameMode==='versus'?820:d.startBall;
+  let ramp=save.gameMode==='boss'?30:save.gameMode==='versus'?42:d.ramp;
+  let max=save.gameMode==='boss'?1320:save.gameMode==='versus'?1280:d.maxBall;
+  ball.speed=Math.min(max,base+state.rally*ramp);
   ball.vx=Math.cos(ang)*ball.speed*dir;ball.vy=Math.sin(ang)*ball.speed+p.vy*.18;ball.x=isPlayer?x2+ball.r+2:x1-ball.r-2;
   burst(ball.x,ball.y,THEMES[save.theme].arena,18,280);ring(ball.x,ball.y,THEMES[save.theme].arena);state.shake=8;sHit();
  }
 }
 function classicPoint(playerWon){
  if(state.pointLocked)return;state.pointLocked=true;ball.vx=ball.vy=0;ball.x=W/2;ball.y=H/2;
- if(playerWon)state.pScore++;else state.aScore++;refreshHud();sScore(playerWon);showMessage(playerWon?'POINT!':'CPU SCORES',playerWon?'#63ffe8':'#ff6575');
- if(state.pScore>=5||state.aScore>=5){setTimeout(()=>endClassic(state.pScore>state.aScore),600)}else setTimeout(()=>{if(state.playing&&!state.paused)resetBall(playerWon?-1:1)},550);
+ if(playerWon)state.pScore++;else state.aScore++;refreshHud();sScore(playerWon);
+ const vs=save.gameMode==='versus';
+ showMessage(vs?(playerWon?'P1 POINT!':'P2 POINT!'):(playerWon?'POINT!':'CPU SCORES'),playerWon?'#63ffe8':'#ff6575');
+ if(state.pScore>=5||state.aScore>=5){setTimeout(()=>vs?endVersus(state.pScore>state.aScore):endClassic(state.pScore>state.aScore),520)}
+ else setTimeout(()=>{if(state.playing&&!state.paused)resetBall(playerWon?-1:1)},430);
 }
 
 function confettiHtml(){
@@ -440,6 +471,12 @@ function confettiHtml(){
 function endClassic(win){
  state.playing=false;showPause(false);let reward=0;if(win){reward=DIFF[save.difficulty].reward;save.coins+=reward;submitGlobalScore(DIFF[save.difficulty].name,`${state.pScore}-${state.aScore}`,reward,{easy:100,normal:220,hard:400,impossible:700}[save.difficulty]+(state.pScore-state.aScore)*10);persist()}
  center.style.display='grid';if(win){sVictory();setTimeout(sReward,250)} panel.innerHTML=`<div class="resultScreen">${win?confettiHtml():''}<div class="resultEmblem">${win?'★':'×'}</div><div class="resultTitle ${win?'win':'lose'}">${win?'VICTORY':'DEFEAT'}</div><div class="sub">${win?'ARENA CLEARED':'THE ARENA WINS THIS ROUND'}</div><div class="resultStats">FINAL SCORE &nbsp; ${state.pScore} — ${state.aScore} &nbsp; • &nbsp; ${DIFF[save.difficulty].name}</div>${win?`<div class="rewardReveal"><div class="rewardAmount"><img src="coin.png">+${reward} COINS</div><div class="sub" style="margin:6px 0 0">${save.coins} total balance</div></div>`:''}<div class="row"><button id="again">${win?'PLAY AGAIN':'RETRY'}</button><button class="secondary" id="back">ARENA MENU</button></div></div>`;document.getElementById('again').onclick=startGame;document.getElementById('back').onclick=mainMenu
+}
+
+function endVersus(p1win){
+ state.playing=false;showPause(false);center.style.display='grid';sVictory();
+ panel.innerHTML=`<div class="resultScreen">${confettiHtml()}<div class="resultEmblem">⚡</div><div class="resultTitle win">${p1win?'PLAYER 1':'PLAYER 2'} WINS</div><div class="sub">LOCAL 2 PLAYER MATCH</div><div class="resultStats">FINAL SCORE &nbsp; ${state.pScore} — ${state.aScore}</div><div class="row"><button id="again">REMATCH</button><button class="secondary" id="back">ARENA MENU</button></div></div>`;
+ document.getElementById('again').onclick=startGame;document.getElementById('back').onclick=mainMenu;
 }
 
 function updateBossHud(){let done=state.bossMax-state.bossHP;bossHits.textContent=`${done} / ${state.bossMax} HITS`;bossHealth.style.width=`${Math.max(0,state.bossHP/state.bossMax*100)}%`}
@@ -453,12 +490,12 @@ function bossHit(){
 
  // Fairer boss return: still threatening, but the ball speed climbs gradually.
  let hits=state.bossMax-state.bossHP;
- ball.speed=Math.min(1040,555+hits*18+state.bossElapsed*2.6);
- let danger=clamp(state.bossElapsed/80 + hits/state.bossMax*.32,0,1);
- let targetOffset=(Math.random()<.5?-1:1)*(player.h*.14 + player.h*.24*danger);
+ ball.speed=Math.min(1320,760+hits*30+state.bossElapsed*5.2);
+ let danger=clamp(state.bossElapsed/55 + hits/state.bossMax*.48,0,1);
+ let targetOffset=(Math.random()<.5?-1:1)*(player.h*.20 + player.h*.42*danger);
  let targetY=clamp(player.y+targetOffset,38,H-38);
  let dx=Math.max(150,state.bossX-player.x),dy=targetY-state.bossY;
- let ang=clamp(Math.atan2(dy,dx),-.58,.58);
+ let ang=clamp(Math.atan2(dy,dx),-.72,.72);
  ball.vx=-Math.abs(Math.cos(ang)*ball.speed);
  ball.vy=Math.sin(ang)*ball.speed;
  let bw=Math.min(H*.34,210),bossPlane=state.bossX-bw*.48;
@@ -478,39 +515,39 @@ function bossLose(reason){
 function update(dt){
  if(state.paused)return;state.time+=dt;state.shake*=Math.pow(.001,dt);if(!state.playing)return;
  player.h=clamp(H*.2,92,136);player.x=34;let py=player.y;
- let dir=0;if(keys.has('w')||keys.has('arrowup'))dir--;if(keys.has('s')||keys.has('arrowdown'))dir++;
+ let dir=0;if(keys.has('w')||(save.gameMode!=='versus'&&keys.has('arrowup')))dir--;if(keys.has('s')||(save.gameMode!=='versus'&&keys.has('arrowdown')))dir++;
  if(dir){player.y+=dir*700*dt;player.targetY=player.y}else player.y+=(player.targetY-player.y)*Math.min(1,dt*17);
  player.y=clamp(player.y,player.h/2+16,H-player.h/2-16);player.vy=(player.y-py)/Math.max(.001,dt);
 
  if(save.gameMode==='classic'){
-  cpu.h=player.h;cpu.x=W-34;const d=DIFF[save.difficulty];
+  const d=DIFF[save.difficulty];cpu.h=player.h*d.cpuH;cpu.x=W-34;
   state.cpuThink-=dt;
   if(state.cpuThink<=0){
     state.cpuThink=d.reaction;
-    let target=H/2;
     if(ball.vx>0){
       let t=Math.max(0,(cpu.x-ball.x)/Math.max(1,ball.vx));
       let rawPred=ball.y+ball.vy*t;
       let min=ball.r+18,max=H-ball.r-18,span=max-min,q=(rawPred-min)%(span*2);
       if(q<0)q+=span*2;
       let exact=min+(q>span?span*2-q:q);
-      // Difficulty changes reaction time, speed and prediction quality. The bot never intentionally dodges the ball.
       let blended=ball.y+(exact-ball.y)*d.predict;
       let noise=(Math.random()*2-1)*d.error;
       state.cpuTarget=clamp(blended+noise,cpu.h/2+16,H-cpu.h/2-16);
-    }else{
-      state.cpuTarget=H/2;
-    }
+    }else state.cpuTarget=H/2;
   }
   let oy=cpu.y,diff=state.cpuTarget-cpu.y;
   cpu.y+=clamp(diff,-d.cpu*dt,d.cpu*dt);
-  cpu.y=clamp(cpu.y,cpu.h/2+16,H-cpu.h/2-16);
-  cpu.vy=(cpu.y-oy)/Math.max(.001,dt);
+  cpu.y=clamp(cpu.y,cpu.h/2+16,H-cpu.h/2-16);cpu.vy=(cpu.y-oy)/Math.max(.001,dt);
+ } else if(save.gameMode==='versus'){
+  cpu.h=player.h;cpu.x=W-34;let oy=cpu.y;
+  let dir2=0;if(keys.has('arrowup'))dir2--;if(keys.has('arrowdown'))dir2++;
+  if(dir2){cpu.y+=dir2*700*dt;cpu.targetY=cpu.y}else cpu.y+=(cpu.targetY-cpu.y)*Math.min(1,dt*17);
+  cpu.y=clamp(cpu.y,cpu.h/2+16,H-cpu.h/2-16);cpu.vy=(cpu.y-oy)/Math.max(.001,dt);
  } else {
   state.bossElapsed+=dt;
   let progress=(state.bossMax-state.bossHP)/state.bossMax;
   // Time is the main pressure: the skull continuously advances and accelerates slightly.
-  let advance=state.bossElapsed*3.35 + Math.pow(state.bossElapsed,1.24)*.54 + progress*W*.045;
+  let advance=state.bossElapsed*5.0 + Math.pow(state.bossElapsed,1.22)*.78 + progress*W*.075;
   let dangerLine=player.x+Math.max(128,W*.12);
   state.bossX=Math.max(dangerLine,W*.82-advance);
   let bh=Math.min(H*.34,210);
@@ -518,7 +555,7 @@ function update(dt){
   if(ball.vx>0){
     state.bossY=clamp(ball.y,bh/2+34,H-bh/2-28);
   }else{
-    state.bossY+=state.bossDir*(82+progress*105+state.bossElapsed*.75)*dt;
+    state.bossY+=state.bossDir*(125+progress*180+state.bossElapsed*1.25)*dt;
     if(state.bossY<bh/2+55){state.bossY=bh/2+55;state.bossDir=1}
     if(state.bossY>H-bh/2-30){state.bossY=H-bh/2-30;state.bossDir=-1}
   }
@@ -529,7 +566,7 @@ function update(dt){
  if(ball.y-ball.r<13&&ball.vy<0){ball.y=13+ball.r;ball.vy*=-1;ring(ball.x,ball.y,'#fff')}if(ball.y+ball.r>H-13&&ball.vy>0){ball.y=H-13-ball.r;ball.vy*=-1;ring(ball.x,ball.y,'#fff')}
  paddleCollision(player,true);
 
- if(save.gameMode==='classic'){
+ if(save.gameMode==='classic'||save.gameMode==='versus'){
   paddleCollision(cpu,false);if(!state.pointLocked&&ball.x<-40)classicPoint(false);else if(!state.pointLocked&&ball.x>W+40)classicPoint(true)
  }else{
   let bw=Math.min(H*.34,210),bossPlane=state.bossX-bw*.48;
@@ -542,9 +579,28 @@ function update(dt){
 }
 
 function rr(x,y,w,h,r){ctx.beginPath();ctx.roundRect(x,y,w,h,r)}
+function drawSimpleTheme(theme){
+ if(theme==='lava'){
+   let g=ctx.createLinearGradient(0,0,0,H);g.addColorStop(0,'#25070c');g.addColorStop(.62,'#63150f');g.addColorStop(1,'#150508');ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
+   ctx.fillStyle='#ff4915';
+   for(let i=0;i<7;i++){let x=(i+.4)*W/7,h=H*(.14+(i%3)*.06),w=W*.095;ctx.beginPath();ctx.moveTo(x-w,H);ctx.quadraticCurveTo(x-w*.5,H-h*.45,x,H-h);ctx.quadraticCurveTo(x+w*.5,H-h*.43,x+w,H);ctx.closePath();ctx.fill()}
+   ctx.fillStyle='#ffc928';
+   for(let i=0;i<6;i++){let x=(i+.75)*W/6,h=H*(.08+(i%2)*.045),w=W*.055;ctx.beginPath();ctx.moveTo(x-w,H);ctx.quadraticCurveTo(x,H-h,x+w,H);ctx.closePath();ctx.fill()}
+   ctx.fillStyle='#321011';ctx.fillRect(0,H*.86,W,H*.14);
+   ctx.strokeStyle='#ff6b26';ctx.lineWidth=3;for(let i=0;i<8;i++){let x=i*W/7;ctx.beginPath();ctx.moveTo(x,H*.92);ctx.lineTo(x+W*.035,H*.88);ctx.lineTo(x+W*.08,H*.94);ctx.stroke()}
+   return true;
+ }
+ if(theme==='ice'){
+   let g=ctx.createLinearGradient(0,0,0,H);g.addColorStop(0,'#061936');g.addColorStop(.62,'#0b4a73');g.addColorStop(1,'#08243e');ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
+   for(let i=0;i<9;i++){let x=i*W/8-W*.05,w=W*(.12+(i%3)*.025),h=H*(.22+(i%4)*.055);ctx.fillStyle=i%2?'#45a7d8':'#72d1ef';ctx.beginPath();ctx.moveTo(x-w*.5,H);ctx.lineTo(x,H-h);ctx.lineTo(x+w*.5,H);ctx.closePath();ctx.fill();ctx.strokeStyle='#b7f1ff';ctx.lineWidth=1.4;ctx.stroke()}
+   ctx.fillStyle='rgba(180,245,255,.14)';ctx.fillRect(0,H*.82,W,H*.18);
+   return true;
+ }
+ return false;
+}
 function drawThemeAmbient(theme){
  if(theme==='lava'){
-   for(let i=0;i<30;i++){
+   for(let i=0;i<13;i++){
      let seed=i*91.731,phase=(state.time*(.18+(i%5)*.025)+seed)%1;
      let x=((i*137.5)%100)/100*W,y=H-(phase*(H*.82));
      let size=1.4+(i%4)*.75,alpha=(1-phase)*.72;
@@ -553,7 +609,7 @@ function drawThemeAmbient(theme){
    }
    ctx.globalAlpha=1;
  }else if(theme==='ice'){
-   for(let i=0;i<24;i++){
+   for(let i=0;i<12;i++){
      let seed=i*73.17,phase=(state.time*(.055+(i%4)*.012)+seed)%1;
      let x=((i*173.3)%100)/100*W+Math.sin(state.time*.8+seed)*18,y=phase*H;
      ctx.globalAlpha=.22+(i%5)*.06;ctx.fillStyle='#dffaff';
@@ -564,15 +620,17 @@ function drawThemeAmbient(theme){
 }
 function draw(){
  let th=THEMES[save.theme],b=BALLS[save.ball],sx=(Math.random()-.5)*state.shake,sy=(Math.random()-.5)*state.shake;ctx.save();ctx.translate(sx,sy);
- let bg=imgs[th.img];if(bg&&bg.complete)ctx.drawImage(bg,0,0,W,H);else{ctx.fillStyle='#060912';ctx.fillRect(0,0,W,H)}
+ let bg=imgs[th.img];
+ if(!drawSimpleTheme(save.theme)){
+   if(bg&&bg.complete)ctx.drawImage(bg,0,0,W,H);else{ctx.fillStyle='#060912';ctx.fillRect(0,0,W,H)}
+ }
  drawThemeAmbient(save.theme);
- ctx.fillStyle='rgba(0,0,0,.18)';ctx.fillRect(0,0,W,H);
- ctx.strokeStyle=th.arena;ctx.lineWidth=3;ctx.shadowColor=th.arena;ctx.shadowBlur=18;rr(10,10,W-20,H-20,18);ctx.stroke();ctx.shadowBlur=0;
+ ctx.fillStyle='rgba(0,0,0,.12)';ctx.fillRect(0,0,W,H);
  ctx.setLineDash([11,17]);ctx.strokeStyle='rgba(255,255,255,.25)';ctx.beginPath();ctx.moveTo(W/2,22);ctx.lineTo(W/2,H-22);ctx.stroke();ctx.setLineDash([]);
  rings.forEach(r=>{ctx.globalAlpha=Math.max(0,r.life/r.max)*.75;ctx.beginPath();ctx.arc(r.x,r.y,r.r,0,Math.PI*2);ctx.strokeStyle=r.c;ctx.lineWidth=4;ctx.stroke()});ctx.globalAlpha=1;
  trail.forEach(t=>{let a=Math.max(0,t.life/.18);ctx.globalAlpha=a*.34;let bi=imgs[b.img];if(bi&&bi.complete)ctx.drawImage(bi,t.x-ball.r*a,t.y-ball.r*a,ball.r*2*a,ball.r*2*a)});ctx.globalAlpha=1;
  function paddle(p){rr(p.x-p.w/2,p.y-p.h/2,p.w,p.h,8);ctx.fillStyle='#fff';ctx.shadowColor=th.arena;ctx.shadowBlur=18;ctx.fill();ctx.shadowBlur=0;ctx.strokeStyle=th.arena;ctx.lineWidth=4;ctx.stroke()}
- paddle(player);if(save.gameMode==='classic')paddle(cpu);
+ paddle(player);if(save.gameMode==='classic'||save.gameMode==='versus')paddle(cpu);
  let bi;
  if(save.ball==='plasma'){
    const frame=Math.floor(state.time*10)%4;
