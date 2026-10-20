@@ -1,8 +1,8 @@
-const CACHE='neon-ping-arena-v1.08';
+const CACHE='neon-ping-arena-v1.10';
 const ASSETS=[
  './','./index.html','./manifest.webmanifest',
  './ball-classic.png','./ball-eight.png','./ball-fire.png','./ball-ice.png','./ball-plasma.png',
- './ball-plasma-0.png','./ball-plasma-1.png','./ball-plasma-2.png','./ball-plasma-3.png',
+ './ball-plasma-0.png','./ball-plasma-1.png','./ball-plasma-2.png','./ball-plasma-3.png','./ball-smiley.png',
  './boss-skull-0.png','./boss-skull-1.png','./boss-skull-2.png','./boss-skull-3.png','./boss-skull-4.png','./boss-skull.png',
  './coin.png','./icon-192.png','./icon-512.png','./shop-white.png',
  './skull-easy.png','./skull-hard.png','./skull-impossible.png','./skull-normal.png',

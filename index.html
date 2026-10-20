@@ -161,10 +161,10 @@ const scoreText=document.getElementById('scoreText'),scoreSub=document.getElemen
 let W=1280,H=720,DPR=1,last=performance.now(),particles=[],rings=[],trail=[];
 
 const DIFF={
- easy:{name:'EASY',reward:15,cpu:330,cpuH:.78,error:48,predict:.62,reaction:.18,startBall:760,ramp:34,maxBall:1080,accent:'#65ff87',icon:'skull-easy.png',desc:'Fast rallies, slower reactions. The AI always tries to return the ball.'},
- normal:{name:'NORMAL',reward:30,cpu:420,cpuH:.84,error:33,predict:.76,reaction:.13,startBall:820,ramp:38,maxBall:1180,accent:'#68a8ff',icon:'skull-normal.png',desc:'Quick and competitive. A real challenge for regular players.'},
- hard:{name:'HARD',reward:50,cpu:520,cpuH:.90,error:21,predict:.87,reaction:.09,startBall:880,ramp:43,maxBall:1280,accent:'#ff6666',icon:'skull-hard.png',desc:'Aggressive tracking and fast exchanges. Mistakes get punished.'},
- impossible:{name:'IMPOSSIBLE',reward:80,cpu:620,cpuH:.95,error:12,predict:.94,reaction:.062,startBall:940,ramp:48,maxBall:1400,accent:'#c971ff',icon:'skull-impossible.png',desc:'Sweaty-kid difficulty: brutal, fast, but still human-beatable.'}
+ easy:{name:'EASY',reward:15,cpu:250,cpuH:.62,error:82,predict:.45,reaction:.28,startBall:980,ramp:58,maxBall:1500,accent:'#65ff87',icon:'skull-easy.png',desc:'Fast action, but the CPU is slow, late and inaccurate.'},
+ normal:{name:'NORMAL',reward:30,cpu:340,cpuH:.70,error:60,predict:.60,reaction:.20,startBall:1040,ramp:64,maxBall:1600,accent:'#68a8ff',icon:'skull-normal.png',desc:'Quick rallies with a competitive but beatable CPU.'},
+ hard:{name:'HARD',reward:50,cpu:445,cpuH:.78,error:40,predict:.76,reaction:.14,startBall:1110,ramp:72,maxBall:1730,accent:'#ff6666',icon:'skull-hard.png',desc:'Fast reactions and much smaller mistakes. Built for strong players.'},
+ impossible:{name:'IMPOSSIBLE',reward:80,cpu:565,cpuH:.85,error:23,predict:.89,reaction:.095,startBall:1200,ramp:82,maxBall:1880,accent:'#c971ff',icon:'skull-impossible.png',desc:'Sweaty-kid mode: extremely fast and punishing, but still human-beatable.'}
 };
 const THEMES={
  space:{name:'Nebula Arena',price:0,img:'theme-space.png',arena:'#68ddff'},
@@ -250,7 +250,7 @@ function showPause(show){pauseBtn.classList.toggle('show',show)}
 
 function mainMenu(){
  state.playing=false;state.paused=false;center.style.display='grid';showPause(false);bossHud.classList.remove('show');refreshHud();
- panel.innerHTML=`<div class="brandKicker">NEON PING ARENA <span>v1.09</span></div><h1>NEON <span>PING</span></h1><div class="sub">Enter the arena. Master the AI, defeat the boss, climb the global rankings, and build your collection.</div>
+ panel.innerHTML=`<div class="brandKicker">NEON PING ARENA <span>v1.10</span></div><h1>NEON <span>PING</span></h1><div class="sub">Enter the arena. Master the AI, defeat the boss, climb the global rankings, and build your collection.</div>
  <div class="coinBig"><img src="coin.png">${save.coins}</div>
  <div class="modePick">
    <div class="card ${save.gameMode==='classic'?'selected':''}" data-gamemode="classic" style="--accent:#63ffe8"><b>CLASSIC</b><div class="sub" style="margin:6px 0 0">First to 5 against the AI. Faster, shorter rallies.</div></div>
@@ -414,14 +414,14 @@ function startGame(){
  player.y=H/2;player.targetY=H/2;cpu.y=H/2;cpu.targetY=H/2;state.cpuTarget=H/2;state.cpuThink=0;
  if(save.gameMode==='boss'){state.bossHP=state.bossMax=15;state.bossX=W*.82;state.bossY=H/2;state.bossDir=1;state.bossExploding=false;state.bossElapsed=0;bossHud.classList.add('show');updateBossHud()}else bossHud.classList.remove('show');
  refreshHud();ball.vx=ball.vy=0;ball.x=W/2;ball.y=H/2;showMessage('READY');
- setTimeout(()=>{if(state.playing&&!state.paused){showMessage('GO!','#63ffe8');resetBall(1)}},600);
+ setTimeout(()=>{if(state.playing&&!state.paused){showMessage('GO!','#63ffe8');resetBall(1)}},350);
 }
 function resetBall(dir=1){
  state.pointLocked=false;ball.x=save.gameMode==='boss'?W*.44:W/2;ball.y=H/2;state.rally=0;
  if(save.gameMode==='boss')ball.speed=760;
  else if(save.gameMode==='versus')ball.speed=820;
  else ball.speed=DIFF[save.difficulty].startBall;
- let a=Math.random()*.56-.28;ball.vx=Math.cos(a)*ball.speed*dir;ball.vy=Math.sin(a)*ball.speed;trail=[];
+ let a=(Math.random()*.72-.36);if(Math.abs(a)<.10)a=a<0?-.10:.10;ball.vx=Math.cos(a)*ball.speed*dir;ball.vy=Math.sin(a)*ball.speed;trail=[];
 }
 
 function pauseGame(){if(!state.playing)return;state.paused=true;center.style.display='grid';showPause(false);pauseMenu()}
@@ -443,14 +443,22 @@ canvas.addEventListener('touchmove',e=>{e.preventDefault();for(const t of e.touc
 function paddleCollision(p,isPlayer){
  const x1=p.x-p.w/2,x2=p.x+p.w/2,y1=p.y-p.h/2,y2=p.y+p.h/2;
  if(ball.x+ball.r>x1&&ball.x-ball.r<x2&&ball.y+ball.r>y1&&ball.y-ball.r<y2&&((isPlayer&&ball.vx<0)||(!isPlayer&&ball.vx>0))){
-  let rel=clamp((ball.y-p.y)/(p.h/2),-1,1),dir=isPlayer?1:-1,ang=rel*.92;
+  let rel=clamp((ball.y-p.y)/(p.h/2),-1,1),dir=isPlayer?1:-1;
+  let paddleSpin=clamp(p.vy/920,-.24,.24);
+  let ang=clamp(rel*1.08+paddleSpin,-1.02,1.02);
   state.rally++;
   let d=save.gameMode==='classic'?DIFF[save.difficulty]:null;
-  let base=save.gameMode==='boss'?760:save.gameMode==='versus'?820:d.startBall;
-  let ramp=save.gameMode==='boss'?30:save.gameMode==='versus'?42:d.ramp;
-  let max=save.gameMode==='boss'?1320:save.gameMode==='versus'?1280:d.maxBall;
-  ball.speed=Math.min(max,base+state.rally*ramp);
-  ball.vx=Math.cos(ang)*ball.speed*dir;ball.vy=Math.sin(ang)*ball.speed+p.vy*.18;ball.x=isPlayer?x2+ball.r+2:x1-ball.r-2;
+  let base=save.gameMode==='boss'?760:save.gameMode==='versus'?900:d.startBall;
+  let ramp=save.gameMode==='boss'?30:save.gameMode==='versus'?58:d.ramp;
+  let max=save.gameMode==='boss'?1320:save.gameMode==='versus'?1550:d.maxBall;
+
+  // Anti-endless-rally pressure: after several returns the pace climbs sharply.
+  let pressure=state.rally>5?(state.rally-5)*28:0;
+  ball.speed=Math.min(max,base+state.rally*ramp+pressure);
+
+  ball.vx=Math.cos(ang)*ball.speed*dir;
+  ball.vy=Math.sin(ang)*ball.speed+p.vy*.12;
+  ball.x=isPlayer?x2+ball.r+2:x1-ball.r-2;
   burst(ball.x,ball.y,THEMES[save.theme].arena,18,280);ring(ball.x,ball.y,THEMES[save.theme].arena);state.shake=8;sHit();
  }
 }
@@ -460,7 +468,7 @@ function classicPoint(playerWon){
  const vs=save.gameMode==='versus';
  showMessage(vs?(playerWon?'P1 POINT!':'P2 POINT!'):(playerWon?'POINT!':'CPU SCORES'),playerWon?'#63ffe8':'#ff6575');
  if(state.pScore>=5||state.aScore>=5){setTimeout(()=>vs?endVersus(state.pScore>state.aScore):endClassic(state.pScore>state.aScore),520)}
- else setTimeout(()=>{if(state.playing&&!state.paused)resetBall(playerWon?-1:1)},430);
+ else setTimeout(()=>{if(state.playing&&!state.paused)resetBall(playerWon?-1:1)},260);
 }
 
 function confettiHtml(){
@@ -530,14 +538,23 @@ function update(dt){
       let min=ball.r+18,max=H-ball.r-18,span=max-min,q=(rawPred-min)%(span*2);
       if(q<0)q+=span*2;
       let exact=min+(q>span?span*2-q:q);
+
+      // Easier bots still TRY to return every shot; they are simply late and imprecise.
+      // They commit to this prediction until their next reaction tick.
       let blended=ball.y+(exact-ball.y)*d.predict;
       let noise=(Math.random()*2-1)*d.error;
       state.cpuTarget=clamp(blended+noise,cpu.h/2+16,H-cpu.h/2-16);
-    }else state.cpuTarget=H/2;
+    }else{
+      // Return toward centre slowly while the ball is travelling away.
+      state.cpuTarget=H/2;
+    }
   }
   let oy=cpu.y,diff=state.cpuTarget-cpu.y;
-  cpu.y+=clamp(diff,-d.cpu*dt,d.cpu*dt);
-  cpu.y=clamp(cpu.y,cpu.h/2+16,H-cpu.h/2-16);cpu.vy=(cpu.y-oy)/Math.max(.001,dt);
+  let desired=clamp(diff*4.0,-d.cpu,d.cpu);
+  cpu.vy+=(desired-cpu.vy)*Math.min(1,dt*6.5);
+  cpu.y+=cpu.vy*dt;
+  cpu.y=clamp(cpu.y,cpu.h/2+16,H-cpu.h/2-16);
+  if(cpu.y<=cpu.h/2+16||cpu.y>=H-cpu.h/2-16)cpu.vy*=.25;
  } else if(save.gameMode==='versus'){
   cpu.h=player.h;cpu.x=W-34;let oy=cpu.y;
   let dir2=0;if(keys.has('arrowup'))dir2--;if(keys.has('arrowdown'))dir2++;
