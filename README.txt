@@ -1,24 +1,16 @@
-NEON PING ARENA v1.10 — FULL GAME PACKAGE
+NEON PING ARENA v1.11 — COSMETIC UPDATE
 
-This package contains the complete game and ALL required image assets.
+New in this build:
+- NEW BALL: Devil Ball (500 coins)
+- Fireball now has a separate rotating triangle orbit layer
+- Smiley Ball now plays a short squeaky parry sound
+- Devil Ball parries release black/red anti-magic spark energy
+- Plasma Orb got smaller blue/purple electric effects
+- Lava arena now has falling meteors and subtle arena motion
+- Ice arena now has snow particles and subtle arena motion
+- Cyber City now has animated neon music notes and subtle arena motion
 
-To play locally:
+How to play:
 1. Extract the ZIP.
-2. Keep every file together in this folder.
-3. Open index.html.
-
-For GitHub Pages:
-Upload ALL files in this folder to the repository root. Do not upload only index.html.
-
-Included:
-- complete game code
-- all ball images, including Smiley and animated Plasma frames
-- all boss skull damage stages
-- all difficulty skulls
-- all arena/theme images
-- icons and shop image
-- web manifest + service worker
-- leaderboard configuration/setup files
-
-IMPORTANT:
-The previous v1.10 ZIP accidentally contained only index.html. This full package fixes that.
+2. Keep every file together in one folder.
+3. Open index.html or upload the whole folder to GitHub Pages.
