@@ -1,17 +1,5 @@
-const CACHE='neon-ping-arena-v1.11';
-const ASSETS=[
- './','./index.html','./manifest.webmanifest',
- './ball-classic.png','./ball-eight.png','./ball-fire.png','./ball-ice.png','./ball-plasma.png',
- './ball-plasma-0.png','./ball-plasma-1.png','./ball-plasma-2.png','./ball-plasma-3.png','./ball-smiley.png','./ball-devil.png','./fire-orbit.png',
- './boss-skull-0.png','./boss-skull-1.png','./boss-skull-2.png','./boss-skull-3.png','./boss-skull-4.png','./boss-skull.png',
- './coin.png','./icon-192.png','./icon-512.png','./shop-white.png',
- './skull-easy.png','./skull-hard.png','./skull-impossible.png','./skull-normal.png',
- './theme-cyber.png','./theme-ice.png','./theme-jungle.png','./theme-lava.png','./theme-space.png'
-];
-self.addEventListener('install',e=>{e.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS)));self.skipWaiting()});
-self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==CACHE).map(k=>caches.delete(k)))));self.clients.claim()});
-self.addEventListener('fetch',e=>{
- const u=new URL(e.request.url);
- if(u.hostname.endsWith('.supabase.co')){e.respondWith(fetch(e.request));return;}
- e.respondWith(fetch(e.request).then(r=>{const copy=r.clone();caches.open(CACHE).then(c=>c.put(e.request,copy));return r}).catch(()=>caches.match(e.request).then(x=>x||caches.match('./index.html'))));
-});
+const CACHE='npa-aftershock-1.20';
+const ASSETS=["./", "./index.html", "./style.css", "./game.js", "./config.js", "./shared/core.js", "./shared/policy.js", "./manifest.webmanifest", "./assets/ball-eight.png", "./assets/ball-plasma.png", "./assets/boss-skull-0.png", "./assets/skull-impossible.png", "./assets/skull-easy.png", "./assets/boss-skull-3.png", "./assets/theme-space.png", "./assets/shop-white.png", "./assets/boss-skull.png", "./assets/coin.png", "./assets/ball-fire.png", "./assets/boss-skull-1.png", "./assets/icon-192.png", "./assets/icon-512.png", "./assets/ball-ice.png", "./assets/ball-classic.png", "./assets/skull-hard.png", "./assets/ball-devil.png", "./assets/boss-skull-2.png", "./assets/theme-jungle.png", "./assets/skull-normal.png", "./assets/ball-plasma-0.png", "./assets/ball-plasma-3.png", "./assets/boss-skull-4.png", "./assets/ball-plasma-2.png", "./assets/fire-orbit.png", "./assets/theme-ice.png", "./assets/ball-plasma-1.png", "./assets/ball-smiley.png", "./assets/theme-lava.png", "./assets/theme-cyber.png", "./sounds/basketball.wav", "./sounds/bone-clack.wav", "./sounds/puck-hit.wav", "./sounds/chicken-squeak.wav", "./sounds/crowd-loop.wav", "./sounds/cheer.wav"];
+self.addEventListener('install',e=>{e.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS)).then(()=>self.skipWaiting()));});
+self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE&&(k.startsWith('npa-aftershock-')||k.startsWith('neon-ping-arena-'))).map(k=>caches.delete(k)))).then(()=>self.clients.claim()));});
+self.addEventListener('fetch',e=>{const u=new URL(e.request.url);if(e.request.method!=='GET'||u.origin!==self.location.origin||u.pathname.includes('/api/')||u.pathname.endsWith('/arena'))return;e.respondWith(fetch(e.request).then(r=>{if(r.ok){const copy=r.clone();caches.open(CACHE).then(c=>c.put(e.request,copy)).catch(()=>{});}return r;}).catch(async()=>{const r=await caches.match(e.request);if(r)return r;if(e.request.mode==='navigate')return (await caches.match('./index.html'))||Response.error();return Response.error();}));});

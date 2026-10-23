@@ -1,0 +1,14 @@
+{
+  "name": "neon-ping-arena",
+  "version": "1.20.0",
+  "private": true,
+  "description": "Neon Ping Arena and authoritative matchmaking server. No external dependencies.",
+  "engines": {
+    "node": ">=22.16.0"
+  },
+  "scripts": {
+    "start": "node server/server.cjs",
+    "test": "node --test tests/core.test.cjs",
+    "test:online": "node tests/online.test.cjs"
+  }
+}

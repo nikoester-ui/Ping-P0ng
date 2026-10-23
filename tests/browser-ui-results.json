@@ -1,0 +1,17 @@
+{
+  "checks": [
+    "seven modes and legacy coins/owned-skin migration",
+    "XP initialized without wiping coins",
+    "E/D and O/K independently control local players",
+    "simultaneous split-screen multitouch",
+    "pause freezes live countdown",
+    "11 ball skins; football costs 25 coins",
+    "boss death has no score label and no early reward",
+    "boss reward only after cracking and shard animation",
+    "Hot Potato resolves correct half at expiry",
+    "Rink Rush banks earnings once on loss",
+    "landscape phone canvas stays in bounds",
+    "zero JavaScript runtime exceptions"
+  ],
+  "errors": []
+}

@@ -1,25 +1,22 @@
 {
-  "name": "Neon Ping Arena",
-  "short_name": "Ping Arena",
-  "description": "Neon Ping Arena v1.07.1 \u2014 arcade ping pong, boss battles, unlockable arenas, ball skins and global rankings.",
+  "name": "Neon Ping Arena \u2014 Aftershock",
+  "short_name": "Neon Ping",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
   "orientation": "landscape",
-  "background_color": "#05060a",
-  "theme_color": "#05060a",
+  "background_color": "#060a16",
+  "theme_color": "#090d1c",
   "icons": [
     {
-      "src": "icon-192.png",
+      "src": "assets/icon-192.png",
       "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any maskable"
+      "type": "image/png"
     },
     {
-      "src": "icon-512.png",
+      "src": "assets/icon-512.png",
       "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any maskable"
+      "type": "image/png"
     }
   ]
 }

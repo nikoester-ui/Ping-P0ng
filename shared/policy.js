@@ -1,0 +1,8 @@
+/* Shared client/server name validation. Conservative filter, not a claim of perfect moderation. */
+(function(root,factory){const p=factory();if(typeof module==='object'&&module.exports)module.exports=p;else root.NPAPolicy=p;})(typeof globalThis!=='undefined'?globalThis:this,function(){
+'use strict';
+const severe=['fuck','fuk','fck','shit','sh1t','bitch','cunt','nigger','nigga','faggot','kike','chink','pussy','dickhead','motherfucker','asshole','arsehole','porn','hentai','rape','rapist','hitler','heilhitler','naz1','nazi','scheiss','scheisz','wichser','hurensohn','fotze','ficken','arschloch','merde','putain','puta','puto'];
+function validateName(input){const name=String(input||'').normalize('NFKC').trim().replace(/ +/g,' ');if(name.length<3||name.length>16)return {ok:false,error:'Use 3–16 characters.'};if(!/^[A-Za-z0-9][A-Za-z0-9 _-]*$/.test(name))return {ok:false,error:'Use letters, numbers, spaces, _ or -.'};const base=name.toLowerCase().normalize('NFKD').replace(/[\u0300-\u036f]/g,''),flat=base.replace(/[013457@$]/g,c=>({'0':'o','1':'i','3':'e','4':'a','5':'s','7':'t','@':'a','$':'s'}[c])).replace(/[^a-z]/g,'').replace(/(.)\1{2,}/g,'$1$1');if(/^(player|guest|user|anon|anonymous|test|admin|moderator|system|bot)\d*$/i.test(name.replace(/[ _-]/g,'')))return {ok:false,error:'Choose your own nickname, not a default or staff name.'};if(severe.some(w=>flat.includes(w))||/(^|[ _-])(sex|dick|cock|slut)([ _-]|$)/i.test(base))return {ok:false,error:'Please choose a different, family-friendly name.'};return {ok:true,name};}
+function country(code){return /^[A-Z]{2}$/.test(String(code||''))?code:'XX';}
+return {validateName,country};
+});
